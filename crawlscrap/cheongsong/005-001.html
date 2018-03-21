@@ -1,0 +1,94 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+   "http://www.w3.org/TR/html4/strict.dtd">
+<HTML>
+   <HEAD>
+      <TITLE>My first HTML document</TITLE>
+      <style rel="stylesheet" type="text/css">
+body {
+ font-size: 25px;
+ 
+ margin-top: 50px;
+    margin-bottom: 50px;
+    margin-right: 80px;
+    margin-left: 80px;
+    
+    padding-top: 50px;
+    padding-bottom: 50px;
+    padding-right: 80px;
+    padding-left: 80px;
+    
+    line-height:1.6em
+}
+</style>
+      <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    "HTML-CSS" : {
+        availableFonts : ["STIX"],
+        preferredFont : "STIX",
+        webFont : "STIX-Web",
+        imageFont : null
+    }
+});
+</script>
+     <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js" type="text/javascript">    
+    MathJax.Hub.Config({
+        HTML: ["input/TeX","output/HTML-CSS"],
+        TeX: { extensions: ["AMSmath.js","AMSsymbols.js"], 
+               equationNumbers: { autoNumber: "AMS" } },
+        extensions: ["tex2jax.js"],
+        jax: ["input/TeX","output/HTML-CSS"],
+        tex2jax: { inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+                   displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+                   processEscapes: true },
+        "HTML-CSS": { availableFonts: ["TeX"],
+                      linebreaks: { automatic: true } }
+    });
+</script>
+   </HEAD>
+   <BODY>
+005-001. selenium library
+<xmp>
+@
+# You should install selenium
+pip3 install selenium
+
+# To use selenium chrome browser, you should install chrome webdriver
+
+@
+# BeautifulSoup proceeds request in backend
+# Selenium proceeds request via chrome browser
+# It means, if you don't hide browser window, it shows up to user
+
+# I access to web page via chrome browser
+# I bring all tags via css syntax or xpath syntax 
+# I define, if tag has id=py, I order selenium to click that tag
+
+# Using BeautifulSoup and selenium is much beneficial
+
+@
+# Let's try automatical clicks
+
+from selenium import webdriver
+import time
+
+browser = webdriver.Chrome("/Users/username/chromedriver")
+browser.get("http://python.org")
+
+# I use css selector
+# I get menus
+menus = browser.find_elements_by_css_selector('#top ul.menu li')
+
+pypi = None
+
+for m in menus:
+    if m.text == "PyPI":
+        pypi = m
+    print(m.text)
+
+pypi.click()
+time.sleep(5)
+browser.quit()
+ 
+      </xmp>
+   </BODY>
+</HTML>
