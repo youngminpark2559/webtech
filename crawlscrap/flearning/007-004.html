@@ -1,0 +1,254 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+   "http://www.w3.org/TR/html4/strict.dtd">
+<HTML>
+   <HEAD>
+      <TITLE>My first HTML document</TITLE>
+      <style rel="stylesheet" type="text/css">
+body {
+ font-size: 25px;
+ 
+ margin-top: 50px;
+    margin-bottom: 50px;
+    margin-right: 80px;
+    margin-left: 80px;
+    
+    padding-top: 50px;
+    padding-bottom: 50px;
+    padding-right: 80px;
+    padding-left: 80px;
+    
+    line-height:1.6em
+}
+</style>
+      <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    "HTML-CSS" : {
+        availableFonts : ["STIX"],
+        preferredFont : "STIX",
+        webFont : "STIX-Web",
+        imageFont : null
+    }
+});
+</script>
+     <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js" type="text/javascript">    
+    MathJax.Hub.Config({
+        HTML: ["input/TeX","output/HTML-CSS"],
+        TeX: { extensions: ["AMSmath.js","AMSsymbols.js"], 
+               equationNumbers: { autoNumber: "AMS" } },
+        extensions: ["tex2jax.js"],
+        jax: ["input/TeX","output/HTML-CSS"],
+        tex2jax: { inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+                   displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+                   processEscapes: true },
+        "HTML-CSS": { availableFonts: ["TeX"],
+                      linebreaks: { automatic: true } }
+    });
+</script>
+   </HEAD>
+   <BODY>
+007-004. scraping static web page
+<xmp>
+@
+# We can scrape movie data from rottentomatoes.com
+
+@
+# Go to https://www.rottentomatoes.com/top/bestofrt/?year=2015
+# to see top 100 popular movie list released in 2015
+# Click one movie and you can see detailed information about that movie
+
+# We will scrap title of movie, rate score, genre, review from each detailed page
+
+@
+# Move to folder where you will proceed task
+# Create new scrapy project
+scrapy startproject rt_crawler
+
+# rt_crawler is created under folder you're located in
+# And you got set of scrapy component
+
+rt_crawler/
+    scrapy.cfg            
+    rt_crawler/           # Python module for corresponding project
+        __init__.py
+        items.py          # Item file for project
+        pipelines.py      # Item pipeline file for project
+        settings.py       # Settings file for project
+        spiders/          # Storing repository for Spider
+            __init__.py
+            ...
+
+@
+# Let's define Item class
+# Open rt_crawler/items.py, and then, add following codes
+
+# RTItem inherits scrapy.Item base class which is provided by scrapy
+# We will store scraped data in this object
+class RTItem(scrapy.Item):
+    # Define member variables to store your scraped items
+    # name = scrapy.Field()
+    # I define member variables
+    title = scrapy.Field()
+    score = scrapy.Field()
+    genres = scrapy.Field()
+    consensus = scrapy.Field()
+
+@
+# Let's define Spider class
+# Create rt_crawler/spiders/rt_spider.py, and then, add following codes
+
+import scrapy
+from rt_crawler.items import RTItem
+
+# I define RTSpider class which inherits scrapy.Spider class
+# I declare member variables(name, allowed_domains, start_urls) 
+class RTSpider(scrapy.Spider):
+    # This is name of corresponding Spider
+    # When you run "crawling web" and "scraping web", you use this name
+    name = "RottenTomatoes"
+    # This is list of sites which is allowed to crawl by Spider
+    allowed_domains = ["rottentomatoes.com"]
+    # This is list of sites which is starting page when crawling
+    # Spider first requests specified site to its server,
+    # and Spider gets response and stores it into response object
+    # response object is processed in parse()
+    start_urls = [
+        "https://www.rottentomatoes.com/top/bestofrt/?year=2015"
+    ]
+
+    # You specify parts (in parse()) which you want to scrap from crawling starting web page
+    # which is got and stored in response object
+    def parse(self, response):
+        # If you want to find hyperlink of first title,
+        # hover mouse over what you want,
+        # then, copy XPath
+        # Then, try response.xpath('//*[@id="top_movies_main"]/div/table/tr/tbody/tr[1]/td[3]/a')
+        # But you don't see any result, which means XPath and chrome developer tool are not almighty
+        # In this case, you iteratively remove part and run command
+        # response.xpath('//*[@id="top_movies_main"]/div/table/tbody/tr[1]/td[3]/a')
+        # response.xpath('//*[@id="top_movies_main"]/div/table/tbody/tr[1]/td[3]')
+        # response.xpath('//*[@id="top_movies_main"]/div/table/tbody/tr[1]')
+        # response.xpath('//*[@id="top_movies_main"]/div/table/tbody')
+        # response.xpath('//*[@id="top_movies_main"]/div/table')
+        # # Now, after removing tbody, you can see Selector
+        # Then, try this to select tr[1], td[3], a element
+        # response.xpath('//*[@id="top_movies_main"]/div/table/tr[1]/td[3]/a')
+        # This is hyperlink element inside of "a" tag
+
+        # You specify @href to bring value of href attribute
+        # response.xpath('//*[@id="top_movies_main"]/div/table/tr[1]/td[3]/a/@href')
+
+        # Then, bring text
+        # response.xpath('//*[@id="top_movies_main"]/div/table/tr[1]/td[3]/a/@href')[0].extract()
+        # 'm/mad_max_fury_road/'
+
+        # But above is partial url of full url
+        To make full url,
+        # url = response.xpath('//*[@id="top_movies_main"]/div/table/tr[1]/td[3]/a/@href')[0].extract()
+        # response.urljoin(url)
+        # 'https://www.rottentomatoes.com/m/mad_max_fury_road'
+
+        # Apply above step by using for loop to bring all data
+        # I find all id="top_movies_main elements and then iterate them one by one
+        for tr in response.xpath('//*[@id="top_movies_main"]/div/table/tr'):
+            # I find value of href attribute by './td[3]/a/@href' 
+            href = tr.xpath('./td[3]/a/@href')
+            # I find full url by href[0].extract()
+            url = response.urljoin(href[0].extract())
+            # I request all full url and I specify how to deal with response by callback=self.parse_page_contents whose method is definded below
+            # For example, I request 'https://www.rottentomatoes.com/m/mad_max_fury_road',
+            # I get html codes as response, I process that html code by parse_page_contents()
+            yield scrapy.Request(url, callback=self.parse_page_contents)
+
+
+    # parse_page_contents() specifies how to scrap on each detailed movie information page's html code
+    # We can use this method for all detailed movie information page html code,
+    # because each page has same structure
+    def parse_page_contents(self, response):
+        # I make RTItem instance
+        # class RTItem(scrapy.Item):
+            # #name = scrapy.Field()
+            # title = scrapy.Field()
+            # score = scrapy.Field()
+            # genres = scrapy.Field()
+            # consensus = scrapy.Field()
+        item = RTItem()
+        # You can find each XPath of title, score, genre, consensus by using chrome developer tool
+        # And then, you assign each element into RTItem object's each corresponding member variable
+        item["title"] = response.xpath('//*[@id="movie-title"]/text()')[0].extract().strip()
+        item["score"] = response.xpath('//*[@id="tomato_meter_link"]/span[2]/span/text()')[0].extract()
+        item["genres"] = response.xpath('//*[@id="mainColumn"]/section[3]/div/div/div[2]/div[4]//span/text()').extract()    # list of genre
+        consensus_list = response.xpath('//*[@id="all-critics-numbers"]/div/div[2]/p//text()').extract()[2:]
+        item["consensus"] = ' '.join(consensus_list).strip()
+        # I return item by yield keyword
+        yield item
+
+@
+# Move to rt_crawler project folder which you made before 
+# You run RottenTomatoes Spider
+scrapy crawl RottenTomatoes
+
+# You can running code
+# You can see some dictionaries like
+# {'consensus':Spotlight gracefully..., 'genre:['Drama','Mystery'], 'score':96, 'title':'Spotlight'}
+
+# If you want to save crawled and scraped data into csv, when you run RottenTomatoes spider, you use -o option
+scrapy crawl RottenTomatoes -o rt.csv
+
+@
+# But contents layout is not that good with default csv saving funtionality which is provided by scrapy
+
+# For resolving this issue, you can use Item pipeline class
+
+# You can specifically define how to process collected data and how to save collected data as file by creating Item pipeline class
+# Create rt_crawler/pipelines.py file, and add following codes
+
+import csv 
+
+# I define RTPipeline class
+class RTPipeline(object):
+    # I declare constructor of this class
+    def __init__(self):
+        # I use csv module in constructor method __init__()
+        # I define csvwriter to write every row of sentence into rt_movies_new.csv file
+        self.csvwriter = csv.writer(open("rt_movies_new.csv", "w"))
+        # We will store data in this order
+        self.csvwriter.writerow(["title", "score", "genres", "consensus"])
+    
+    # I define process_item() to specify how to process each collected Item via Spider
+    def process_item(self, item, spider):
+        # I declare one list which will be appended by each value of Item member variable
+        row = []
+        row.append(item["title"])
+        row.append(item["score"])
+        # In case of genre member variable, it is originally list data type
+        # So, I first concatenate each element of list by "|" to make one string
+        # And then I append each one string 
+        row.append('|'.join(item["genres"]))
+        row.append(item["consensus"])
+        # I pass row which I processed above
+        # What I did is writing one row of rt_movies_new.csv file for one detailed movie data
+        self.csvwriter.writerow(row)
+        return item
+
+@
+# After defining Item pipeline, you should configure defined Item pipeline able to use in Settings when you run crawling
+
+# Open rt_crawler/settings.py file, and then, find ITEM_PIPELINES, uncomment ITEM_PIPELINES, edit ITEM_PIPELINES as follow
+
+ITEM_PIPELINES = { 
+    # RTPipeline is what we created
+    'rt_crawler.pipelines.RTPipeline': 300,
+}
+
+@
+# You run RottenTomatoes spider
+scrapy crawl RottenTomatoes
+
+# Collected items are written by Item pipeline into rt_movies_new.csv file
+
+@
+# For more detail of using scrapy, go to this site
+# http://scrapy.readthedocs.io
+      </xmp>
+   </BODY>
+</HTML>
