@@ -1,0 +1,75 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+   "http://www.w3.org/TR/html4/strict.dtd">
+<HTML>
+   <HEAD>
+      <TITLE>My first HTML document</TITLE>
+      <style rel="stylesheet" type="text/css">
+body {
+ font-size: 25px;
+ 
+ margin-top: 50px;
+    margin-bottom: 50px;
+    margin-right: 80px;
+    margin-left: 80px;
+    
+    padding-top: 50px;
+    padding-bottom: 50px;
+    padding-right: 80px;
+    padding-left: 80px;
+    
+    line-height:1.6em
+}
+</style>
+      <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    "HTML-CSS" : {
+        availableFonts : ["STIX"],
+        preferredFont : "STIX",
+        webFont : "STIX-Web",
+        imageFont : null
+    }
+});
+</script>
+     <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js" type="text/javascript">    
+    MathJax.Hub.Config({
+        HTML: ["input/TeX","output/HTML-CSS"],
+        TeX: { extensions: ["AMSmath.js","AMSsymbols.js"], 
+               equationNumbers: { autoNumber: "AMS" } },
+        extensions: ["tex2jax.js"],
+        jax: ["input/TeX","output/HTML-CSS"],
+        tex2jax: { inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+                   displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+                   processEscapes: true },
+        "HTML-CSS": { availableFonts: ["TeX"],
+                      linebreaks: { automatic: true } }
+    });
+</script>
+   </HEAD>
+   <BODY>
+005-002. login via selenium
+<xmp>
+@
+from selenium import webdriver
+import time
+
+browser = webdriver.Chrome("/Users/username/chromedriver")
+browser.get("https://nid.naver.com/nidlogin.login")
+# < You will see opened browser
+
+# I have to find tag to which id input box belongs
+# In chrome developer tool, you can copy "css selector" or "xpath"
+
+# I select element in html page via css selector "#id"
+# I input my id
+id = browser.find_elements_by_css_selector("#id").send_keys("site_id")
+pw = browser.find_elements_by_xpath('//*[@id="pw"]').send_keys("site_pw")
+# I have interval time
+time.sleep(2)
+# I click button
+browser.find_elements_by_css_selector("frmNIDLogin>fieldset>input").click()
+time.sleep(10)
+browser.quit()
+ 
+      </xmp>
+   </BODY>
+</HTML>
