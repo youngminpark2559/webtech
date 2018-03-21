@@ -128,7 +128,7 @@ def crawlingData(date, pageCount):
                     d["imgSrc"] = imgTag["src"]
                 except:
                     d["imgSrc"] = "No image"
-                # I append dictionary "d" into list "l"
+                # I append dictionary "d" into list "l" per one for loop
                 l.append(d)
 
     # I convert "l" into dataframe
