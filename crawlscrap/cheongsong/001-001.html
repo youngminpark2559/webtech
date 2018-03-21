@@ -1,0 +1,108 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+   "http://www.w3.org/TR/html4/strict.dtd">
+<HTML>
+   <HEAD>
+      <TITLE>My first HTML document</TITLE>
+      <style rel="stylesheet" type="text/css">
+body {
+ font-size: 25px;
+ 
+ margin-top: 50px;
+    margin-bottom: 50px;
+    margin-right: 80px;
+    margin-left: 80px;
+    
+    padding-top: 50px;
+    padding-bottom: 50px;
+    padding-right: 80px;
+    padding-left: 80px;
+    
+    line-height:1.6em
+}
+</style>
+      <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    "HTML-CSS" : {
+        availableFonts : ["STIX"],
+        preferredFont : "STIX",
+        webFont : "STIX-Web",
+        imageFont : null
+    }
+});
+</script>
+     <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js" type="text/javascript">    
+    MathJax.Hub.Config({
+        HTML: ["input/TeX","output/HTML-CSS"],
+        TeX: { extensions: ["AMSmath.js","AMSsymbols.js"], 
+               equationNumbers: { autoNumber: "AMS" } },
+        extensions: ["tex2jax.js"],
+        jax: ["input/TeX","output/HTML-CSS"],
+        tex2jax: { inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+                   displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+                   processEscapes: true },
+        "HTML-CSS": { availableFonts: ["TeX"],
+                      linebreaks: { automatic: true } }
+    });
+</script>
+   </HEAD>
+   <BODY>
+001-001. basic of Beautifulsoup library, parsing static web page
+<xmp>
+@
+# We need to install libraries which we need to crawl web page
+pip3 install requests
+pip3 install bs4
+
+@
+import requests
+from bs4 import BeautifulSoup
+
+# You access to web page
+r=requests.get("http://lambutan.dothome.co.kr/")
+# And you bring its contents
+c=r.content
+# < Output has low readability
+# > I can reshape that contents as html format by using html.parser of Beautifulsoup
+soup=BeautifulSoup(c,"html.parser")
+
+# In case of table,
+# entire table belongs to tbody
+# each row belongs to tr
+# each column belongs to td
+
+# tbody>tr>td or class
+
+# You can use find()
+# to find specific tag
+# if specific tag exists only one or if you want to bring one tag
+# if there are multiple tags, this brings the first tag
+
+# I bring entire table
+all=soup.find("tbody")
+
+# You can use find_all()
+# to find specific multiple tags
+# if specific tag exists multiple ones or if you want to bring multiple ones
+# if there are multiple tags, this stores as list
+# <tr class="">a</tr> -> all2[0]
+# <tr class="">b</tr> -> all2[1]
+# <tr class="">c</tr> -> all2[2]
+# all2 = ["a","b","c"]
+
+# I store each row (which belongs to tr tag and whose class is whitespace) into all2
+all2=all.find_all("tr",{"class":""})
+
+
+for item in all2:
+    # I find element which has td tag and whose class is professor
+    professor=item.find("td",{"class":"professor"}).text
+    lectureName=item.find("td",{"class":"lecture"}).text
+    orther=item.find("td",{"class":"orther"}).text
+    grade = item.find("td",{"class": "grade"}).text
+    evaluation=item.find("td",{"class": "evaluation"}).text
+    
+    print(professor + " / " + lectureName + " / " + orther + " / " + grade + " / " + evaluation)
+    # < Kim / Python / None / 1 / 1
+      </xmp>
+   </BODY>
+</HTML>
