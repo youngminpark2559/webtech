@@ -1,0 +1,136 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+   "http://www.w3.org/TR/html4/strict.dtd">
+<HTML>
+   <HEAD>
+      <TITLE>My first HTML document</TITLE>
+      <style rel="stylesheet" type="text/css">
+body {
+ font-size: 25px;
+ 
+ margin-top: 50px;
+    margin-bottom: 50px;
+    margin-right: 80px;
+    margin-left: 80px;
+    
+    padding-top: 50px;
+    padding-bottom: 50px;
+    padding-right: 80px;
+    padding-left: 80px;
+    
+    line-height:1.6em
+}
+</style>
+      <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    "HTML-CSS" : {
+        availableFonts : ["STIX"],
+        preferredFont : "STIX",
+        webFont : "STIX-Web",
+        imageFont : null
+    }
+});
+</script>
+     <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js" type="text/javascript">    
+    MathJax.Hub.Config({
+        HTML: ["input/TeX","output/HTML-CSS"],
+        TeX: { extensions: ["AMSmath.js","AMSsymbols.js"], 
+               equationNumbers: { autoNumber: "AMS" } },
+        extensions: ["tex2jax.js"],
+        jax: ["input/TeX","output/HTML-CSS"],
+        tex2jax: { inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+                   displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+                   processEscapes: true },
+        "HTML-CSS": { availableFonts: ["TeX"],
+                      linebreaks: { automatic: true } }
+    });
+</script>
+   </HEAD>
+   <BODY>
+007-003. structure of scrapy, introduction to scraping web
+<xmp>
+@
+Spider class
+You disgnate information of which sites you will crawl into Spider class
+You disgnate information of which ways you will use to crawl into Spider class
+You disgnate information of which parts of site you will scrap into Spider class
+
+Selector class
+When you designate information of which parts of site you will scrap into Spider class,
+you need to have "unifided way" of representing html tags you want to select on web
+Selector class provides machanism to conviniently select html tags
+Selector class is built based on one of famous parsing library lxml
+When you use Selector class, you can use CSS selector to select specific html tag
+You can use XPath (as recommended way) which is specialized to select html tags
+
+Item class
+This is user custom data structure which is used to store scraped page
+
+Item Pipeline class
+You can process and export data which is stored via Item class
+
+Settings class
+You can configure detailed settings of how Spider or Item Pipeline work
+You can use robots.txt of each web site to configure settings for scraping bot
+
+
+@
+# I try scraping web page by using "scrapy shell" and "chrome developer tool"
+
+# activate py27
+scrapy shell "http://www.dmoz.org/Computers/Programming/Languages/Python/Books"
+# You're now in IPython IDE
+# Open chrome developer tool
+# GO to element tab 
+# You can see html source code of current page
+# Click top left button
+# Hover mouse on element which you want to scrap
+# Go to selected element and right click on it
+# Go to Copy and Copy XPath
+# You get XPath which is related to element what you hover on
+# On scrapy shell, response.xpath('//*[@id="site-list-content"]/div[1]/div[3]/a/div')
+# Variable response stores response information when you do scrapy shell "http://www.dmoz.org/Computers/Programming/Languages/Python/Books"
+# Now, you got Selector object which contains corresponding element
+
+@
+# XPath
+'//*[@id="site-list-content"]/div[1]/div[3]/a/div/text()'
+
+// : This inspects all descendent elements of standard element (standard element//conditions)
+From all descendent elements, find elements satisfying conditions
+If // shows up most fisrt area, standard element becomes html tag which is the most top tag
+And it finds all descendent elements (not only direct child elements) which satisfy conditions
+
+/ : This inspects direct child elements of standard element (standard element/conditions)
+From direct child elements, find elements satisfying conditions
+If / shows up most fisrt area, standard element becomes html tag which is the most top tag
+And it finds all direct child elements which satisfy conditions
+
+* : It will inspect all elements which are decorated by all kind of tag
+
+[@id="site-list-content"] : It will find all elements which are decorated by all kind of tag
+I give more detailed condition for some elements
+It will find elements which hava id="site-list-content"
+
+[1] : If multiple elements satisfy specified condition, you can specify particular element by index number which starts with 1
+
+/text() : It extracts text part from elements you found
+
+@
+response.xpath('//*[@id="site-list-content"]/div[1]/div[3]/a/div/text()')
+response.xpath('//*[@id="site-list-content"]/div[1]/div[3]/a/div/text()').extract()
+# You get actual data which is got by inspect via data stored in Selector class
+# ['Core Python Programming ']
+
+response.xpath('//*[@id="site-list-content"]/div[1]/div[3]/a/div/text()').extract()[0]
+# 'Core Python Programming '
+
+@
+# Scraping title text for all item on "Sites list"
+titles = response.xpath('//*[@id="site-list-content"]/div')
+title = titles[0]
+title.xpath('./div[3]/a//div/text()')
+for title in titles:
+    print(title.xpath('./div[3]/a//div/text()'))
+      </xmp>
+   </BODY>
+</HTML>
