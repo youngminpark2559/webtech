@@ -1,0 +1,107 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+   "http://www.w3.org/TR/html4/strict.dtd">
+<HTML>
+   <HEAD>
+      <TITLE>My first HTML document</TITLE>
+      <style rel="stylesheet" type="text/css">
+body {
+ font-size: 25px;
+ 
+ margin-top: 50px;
+    margin-bottom: 50px;
+    margin-right: 80px;
+    margin-left: 80px;
+    
+    padding-top: 50px;
+    padding-bottom: 50px;
+    padding-right: 80px;
+    padding-left: 80px;
+    
+    line-height:1.6em
+}
+</style>
+      <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    "HTML-CSS" : {
+        availableFonts : ["STIX"],
+        preferredFont : "STIX",
+        webFont : "STIX-Web",
+        imageFont : null
+    }
+});
+</script>
+     <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js" type="text/javascript">    
+    MathJax.Hub.Config({
+        HTML: ["input/TeX","output/HTML-CSS"],
+        TeX: { extensions: ["AMSmath.js","AMSsymbols.js"], 
+               equationNumbers: { autoNumber: "AMS" } },
+        extensions: ["tex2jax.js"],
+        jax: ["input/TeX","output/HTML-CSS"],
+        tex2jax: { inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+                   displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+                   processEscapes: true },
+        "HTML-CSS": { availableFonts: ["TeX"],
+                      linebreaks: { automatic: true } }
+    });
+</script>
+   </HEAD>
+   <BODY>
+007-002. installing scrapy and selenium under Windows
+<xmp>
+@
+# Old days, scrapy was supported only by python 2
+
+@
+conda create -n py27 python=2.7
+activate py27
+python --version
+
+# When you use scrapy, you should do scraping and crawling in state of activated py27
+# When you finish using scrapy, you can deactivate py27 to be out of py27 virtual environment
+# Then, you can check you have python 3 by running python --version
+
+@ 
+# To install scrapy, you need to perform some steps
+# 1. activate py27
+# 1. scrapy is dependent on lxml library
+# So, go to https://www.lfd.uci.edu/~gohlke/pythonlibs/#lxml
+# download lxml‑4.2.0‑cp27‑cp27m‑win_amd64.whl
+# Paste that file into user/username/
+# Move to c:/user/username in command prompt
+# (py27) pip install lxml‑4.2.0‑cp27‑cp27m‑win_amd64.whl
+# 1. You should install pypiwin32
+# (py27) pip install pypiwin32
+# 1. Install microsoft visual c++ compiler for python 2.7
+# http://www.microsoft.com/en-us/download/details.aspx?id=44266
+# In case that you already have this file, you first try installing scrapy
+# And if you run into error, install microsoft visual c++ compiler for python 2.7
+# 1. Install scrapy
+# (py27) pip install scrapy
+# 1. Install selenium library which is automation browser library,
+# which means you need driver program to use that automation browser
+# 1. Since we will use chrome browser, we will install WebDriver for Chrome
+# https://sites.google.com/a/chromium.org/chromedriver/downloads
+# chromedriver_win32.zip
+# unzip that file and locate executable file into C:\Users\Username\chromedriver.exe
+# We will need to input above path like following whenever we run chrome via selenium
+# browser = webdriver.Chrome("C:\Users\Username\chromedriver.exe")
+
+@
+# We installed scrapy and selenium library with webdriver
+# Let's test scrapy
+# move to c:/users/username
+(py27) scrapy shell "https://www.flearning.net/classes/15"
+
+# Let's test selenium
+(py27) jupyter notebook
+from selenium import webdriver
+browser = webdriver.Chrome("C:\Users\Username\chromedriver.exe")
+# And you can see opening browser
+
+# You input site address which you want to open on selenium browser with chromedriver
+browser.get("http://flearing.net")
+# Terminate browser
+browser.quit()
+      </xmp>
+   </BODY>
+</HTML>
