@@ -1,0 +1,151 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+   "http://www.w3.org/TR/html4/strict.dtd">
+<HTML>
+   <HEAD>
+      <TITLE>My first HTML document</TITLE>
+      <style rel="stylesheet" type="text/css">
+body {
+ font-size: 25px;
+ 
+ margin-top: 50px;
+    margin-bottom: 50px;
+    margin-right: 80px;
+    margin-left: 80px;
+    
+    padding-top: 50px;
+    padding-bottom: 50px;
+    padding-right: 80px;
+    padding-left: 80px;
+    
+    line-height:1.6em
+}
+</style>
+      <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    "HTML-CSS" : {
+        availableFonts : ["STIX"],
+        preferredFont : "STIX",
+        webFont : "STIX-Web",
+        imageFont : null
+    }
+});
+</script>
+     <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js" type="text/javascript">    
+    MathJax.Hub.Config({
+        HTML: ["input/TeX","output/HTML-CSS"],
+        TeX: { extensions: ["AMSmath.js","AMSsymbols.js"], 
+               equationNumbers: { autoNumber: "AMS" } },
+        extensions: ["tex2jax.js"],
+        jax: ["input/TeX","output/HTML-CSS"],
+        tex2jax: { inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+                   displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+                   processEscapes: true },
+        "HTML-CSS": { availableFonts: ["TeX"],
+                      linebreaks: { automatic: true } }
+    });
+</script>
+   </HEAD>
+   <BODY>
+007-005. collecting data in dynamic web page
+<xmp>
+@
+# We will collect data from premierleague.com
+
+# We can see final ranking in 15/16 season
+# https://www.premierleague.com/tables?co=1&se=42&mw=-1&ha=-1
+
+# We will collect data of position, club, played, won, drawn, lost, gf, ga, gd, points, etc from ranking table on web page
+
+@
+# Create scrapy project named epl_crawler
+
+# We will Item class
+# Open epl_crawler/items.py file and add following codes
+class EPLItem(scrapy.Item):
+    # Define member variables for your items
+    # name = scrapy.Field()
+    club_name = scrapy.Field()
+    position = scrapy.Field()
+    played = scrapy.Field()
+    won = scrapy.Field()
+    drawn = scrapy.Field()
+    lost = scrapy.Field()
+    gf = scrapy.Field()
+    ga = scrapy.Field()
+    gd = scrapy.Field()
+    points = scrapy.Field()
+
+@
+# You will scrap "visible" web page by using selenium webdriver 
+
+@
+# I define Spider class and add code
+# At this time, instead we scrap web page by using response object, we use selenium webdriver to request url, and we get response into selector object
+
+# You create following file into epl_crawler/spiders/epl_spider.py
+# and add following code into it
+
+import scrapy
+from selenium import webdriver
+from epl_crawler.items import EPLItem
+
+class EPLSpider(scrapy.Spider):
+    # This is name for this spider
+    name = "PremierLeague"
+    # This is allowed sites list which spider can crawl
+    allowed_domains = ["premierleague.com"]
+    # This list of site represents starting site when you start crawling
+    start_urls = [
+        "https://www.premierleague.com/tables?co=1&se=42&mw=-1&ha=-1"
+    ]
+
+    # This is overriden constructor method
+    def __init__(self):
+        # This is constructor method of base class
+        scrapy.Spider.__init__(self)
+        # I make chrome webdriver to open browser
+        # I assign opened browser into self.browser
+        self.browser = webdriver.Chrome("/Users/kilho/chromedriver")
+
+    def parse(self, response):
+        # I bring web page corresponding to url by using selenium web browser with chrome webdriver
+        self.browser.get(response.url)
+        # I have 5 seconds to give enough time to load all contents
+        # between self.browser.get() and self.browser.find_element_by_xpath().get_attribute()
+        time.sleep(5)
+        # self.browser pulled web page from above self.browser.get(response.url)
+        # And I need to bring all html codes by using XPath
+        # I assign result into html local variable
+        html = self.browser.find_element_by_xpath('//*').get_attribute('outerHTML')
+        # I create Selector instance with passing text=html
+        selector = Selector(text=html)
+        # I choose elements what I want to get by using xpath
+        rows = selector.xpath('//*[@id="mainContent"]/div/div[1]/div[3]/div/div/table/tbody/tr[not(@class="expandable")]')
+        for row in rows:
+            # I create EPLItem instance which has various member variables
+            item = EPLItem()
+            # I find text of element what I want to get from each row
+            item["club_name"] = row.xpath('./td[3]/a/span[2]/text()')[0].extract()
+            item["position"] = row.xpath('./td[2]/span[1]/text()')[0].extract()
+            item["played"] = row.xpath('./td[4]/text()')[0].extract()
+            item["won"] = row.xpath('./td[5]/text()')[0].extract()
+            item["drawn"] = row.xpath('./td[6]/text()')[0].extract()
+            item["lost"] = row.xpath('./td[7]/text()')[0].extract()
+            item["gf"] = row.xpath('./td[8]/text()')[0].extract()
+            item["ga"] = row.xpath('./td[9]/text()')[0].extract()
+            item["gd"] = row.xpath('./td[10]/text()')[0].extract()
+            item["points"] = row.xpath('./td[11]/text()')[0].extract()
+            # I return item instance            
+            yield item
+
+
+@
+# Run spider to crawl
+scrapy crawl PremierLeague -o pl.csv
+
+@
+# For more detail for crawling and scraping web page which needs login, you can reference following site
+# http://selenium-python.readthedocs.io/
+      </xmp>
+   </BODY>
+</HTML>
