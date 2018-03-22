@@ -1,0 +1,556 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+   "http://www.w3.org/TR/html4/strict.dtd">
+<HTML>
+   <HEAD>
+      <TITLE>My first HTML document</TITLE>
+      <style rel="stylesheet" type="text/css">
+body {
+ font-size: 25px;
+ 
+ margin-top: 50px;
+    margin-bottom: 50px;
+    margin-right: 80px;
+    margin-left: 80px;
+    
+    padding-top: 50px;
+    padding-bottom: 50px;
+    padding-right: 80px;
+    padding-left: 80px;
+    
+    line-height:1.6em
+}
+</style>
+      <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    "HTML-CSS" : {
+        availableFonts : ["STIX"],
+        preferredFont : "STIX",
+        webFont : "STIX-Web",
+        imageFont : null
+    }
+});
+</script>
+     <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js" type="text/javascript">    
+    MathJax.Hub.Config({
+        HTML: ["input/TeX","output/HTML-CSS"],
+        TeX: { extensions: ["AMSmath.js","AMSsymbols.js"], 
+               equationNumbers: { autoNumber: "AMS" } },
+        extensions: ["tex2jax.js"],
+        jax: ["input/TeX","output/HTML-CSS"],
+        tex2jax: { inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+                   displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+                   processEscapes: true },
+        "HTML-CSS": { availableFonts: ["TeX"],
+                      linebreaks: { automatic: true } }
+    });
+</script>
+   </HEAD>
+   <BODY>
+001-E4NKNRjrBqc. building blog
+<xmp>
+@
+# You should install Django
+pip install Django
+
+# After installing Django, you can use django-admin command
+django-admin
+
+@
+# You can create django project
+django-admin startproject myproject
+cd myproject
+tree .
+# manage.py
+# myproject
+#     __init__.py
+#     settings.py
+#     urls.py
+#     wsgi.py
+# 1 directory, 5 files
+
+@
+# Since we will make blog, we use following command
+python manage.py startapp blog
+tree
+# .
+#     blog
+#         __init__.py
+#         admin.py
+#         migrations
+#             __init__.py
+#         models.py
+#         tests.py
+#         views.py
+#     manage.py
+#     myproject
+#         __init__.py
+#         __pycache__
+#             __init__.cpython-35.pyc
+#             settings.cpython-35.pyc
+#         settings.py
+#         urls.py
+#         wsgi.py
+# 4 directories, 13 files        
+
+@
+# Open most top myproject folder by editor
+
+
+@
+# go to settings.py
+# go to INSTALLED_APPS
+# add 'blog'
+
+@
+# go to views.py
+from django.shortcuts import render
+
+def index(request):
+    return render(request, 'blog/index.html')
+
+# go to urls.py
+# go to urlpatterns
+add url(r'^$', 'blog.views.index')
+
+# type localhost:8000
+# above one is matched with r'^$'
+# then, index() in views.py is invoked
+
+
+@
+# Under blog/templates/blog/ folder, make index.html
+
+@
+# refresh server
+python manage.py runserver
+
+# go to localhost:8000
+
+@
+# go to index.html
+# add,
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf8"/>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
+    </head>
+    <body>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <h1>Hello django</h1>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
+
+@
+# If you want to add more views, go to urls.py
+Find urlpatterns, add more patterns
+urlpatterns = {
+    url(r'^admin/', include(admin.site.urls)),
+    url(r'^$', 'blog.views.index'),
+    # if localhost:8000/new/ fires, invoke post_new()
+    url(r'^new/', 'blog.views.post_new'),
+}
+
+
+@
+# go to views.py
+# add,
+def post_new(request):
+    return render(request, 'blog/post_form.html')
+
+@
+# Let's talk about "model"
+# We will create 2 models(post where we store posts, comment where we store comments) for blog
+# go to models.py
+from django.db import models
+
+# Let's create Post class
+# Post class inherits model.Model base class
+class Post(model.Model):
+    # id member variables is automatically generated
+    # id = PositiveIntegerField(), primary_key
+    # I define member variables
+    # I configure title can store 100 characters
+    title = model.CharField(max_length=100)
+    # I configure content can store infinite characters
+    content = model.CharField()
+    # I configure autosave functionality of add time(only once) by using "auto_now_add=True"
+    created_at = models.DateTimeField(auto_now_add=True)
+    # I configure autosave functionality of update time(whenever) by using "auto_now=True"
+    updated_at = models.DateTimeField(auto_now=True)
+
+@
+# Go to settings.py
+# Find INSTALLED_APPS
+# You can see default apps which django provides
+# django.contrib.admin
+# django.contrib.auth
+# django.contrib.contenttype
+# django.contrib.sessions
+# django.contrib.messages
+# django.contrib.staticfiles
+# 'blog'
+
+python manage.py makemigrations blog
+# Above apps can be applied into database by migration
+python manage.py migrate
+
+@
+# Default database which is created when creating project is sqlite3
+# Find db.sqlite3 file in project directory
+# Open it with viewer
+# You can see generated tables
+# You can see blog_post table which contains each column(id, titles, content, created_at, updated_at)
+
+# table naming convention
+# appname_modelname
+# blog_post
+# blog app_post model
+
+
+@
+# go to blog/admin.py
+from django.contrib import admin
+from .models import Post
+
+# I will use Post model in admin site
+admin.site.register(Post)
+
+# go to localhost:8000/admin
+# you can see admin page
+# this url is mapped to urls.py
+# urlpatterns={
+    # (url(r'^admin/', include(admin.site.urls)),
+# }
+
+# Let's create admin account
+python manage.py createsuperuser
+username : username
+email : optional(enter to pass)
+password : pw
+
+# login with created credential on admin page
+
+# You can see Blog app Posts model
+# You can add button to write post
+
+@
+# go to models.py
+# in Post class, add,
+def __str__(self):
+    return self.title
+# Now, you can see title as you put
+
+@
+# Class dealing with unicode is different between python2 and python3
+# In python2, you should use __unicode__()
+# In python3, you should use __str__()
+
+@
+# If you use decorator "@python_2_unicode_compatible" on class Post(model.Model),
+# you don't need to use __unicode__() in python2 when you use __str__()
+# But I recommend you use only python3
+
+@
+# go to admin.py
+# add,
+class PostAdmin(admin.ModelAdmin):
+    list_display = ('id', 'title')
+
+admin.site.register(Post, PostAdmin)
+# You can see devided columns
+# ID  Title
+# 1   aa
+
+
+@
+# When user goes to top-most path "localhost:8000", he will see "hell django"
+
+@
+# go to views.py
+# add,
+from .models imort Post
+def index(request):
+    # I access via model's method
+    post_list = Post.objects.all()
+    return render(request, 'blog/index.html', {
+        # I will use templates
+        'post_list':post_list,
+    })
+
+# Then, go to index.html
+<h1>hello django</h1>
+<table class="table table-hover table-bordered">
+    <tbody>
+        # I will use django template syntax to access 
+        {% for post in post_list %}
+        <tr>
+            <td>{{post.title}}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+# Go to localhost:8000, then, you can see,
+# hello django
+# a
+# b
+
+@
+# go to urls.py
+# find urlpatterns
+# add,
+# \d+ [0-9] over 1 times
+# for example, localhost:8000/123
+url(r'^(?P<pk>\d+)/$', 'blog.views.post_detail')
+
+@
+# go to views.py
+# add,
+# note pk
+# What urls.py does is it extract url part from localhost:8000/url-part
+# and then pass url(in this case, pk) to method 
+def post_detail(request, pk)
+    # In django, we can access to primary key field via pk
+    # This brings post whose pk is pk from database
+    # If there is no post corresponding to pk,
+    # Post.DoesnotExist exception occurs (500 error)
+    post = post Post.objects.get(pk=pk)
+    # I display brought contents
+    return render(request, 'blog/post_detail.html',{
+        'post':post,
+    })
+
+
+@
+# Create post_detail.html in templates/blog folder
+<h1>{{post.title}}</h1>
+{{post.content}}
+# This wraps each sentence by <p></p>
+{{post.content|linebreaks}}
+# This appends <br/> at the end of each sentence
+{{post.content|linebreaksbr}}
+# go to localhost:8000/1
+
+
+@
+# Let's make comment functionality
+# go to models.py
+# add,
+class Comment(model.Model):
+    # Note that post and comments has 1:n relation
+    # So, we use foreign key
+    # In case of 1:n, something located in 1 should be decorated by foreign key
+    post = models.ForeignKey(Post)
+    author = models.CharField(max_length=10)
+    message = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+# At this time, comment table doesn't exist in database
+# Let's make comment table in database
+python manage.py makemigrations blog
+python manage.py migrate           
+
+@
+# To see comments in admin page, go to admin.py
+# add,
+from .models import Post, Comment
+admin.site.register(Comment)
+
+@
+# Let's make user write comment
+# go to urls.py
+# find urlpatterns
+# add,
+url(r'^(?P<pk>\d+)/comments/new/$', 'blog.views.comment_new')
+# < above pattern is localhost:8000/3453/comments/new/
+
+@
+# go to views.py
+# add,
+def comment_new(request, pk):
+    return None
+
+@
+# Let's use "form" which django provides
+# create templates/blog/form.py
+# add,
+from django import forms
+from .models import Comment
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        # This form is form for which model? Comment model
+        model = Comment
+        # I will apply all fields
+        fields = '__all__'
+
+@
+# go to views.py
+# add,
+from .forms import CommentForm        
+
+def comment_new(request, pk):
+    # Following code is standardized one when you use "form"
+    if request.method == 'POST':
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('blog.views.post_detail', pk)
+    else:
+        form = CommentForm()
+    return render(request, 'blog/post_form.html', {
+        'form':form,
+    })
+
+@
+# Create /blog/templates/blog/post_form.html
+# add,
+<form action="" method="POST">
+    # csrf_token is security functionality
+    {% csrf_token %}
+    <table>
+        # When you write this, django form doesn't create html tag
+        # django form create html tag for fields in form tag
+        # So, you should manually create form tag
+        {{form.as_table}}
+    </table>
+    <input type="submit" />
+</form>
+# go to localhost:8000/1/comments/new/
+
+@
+# Let's make comment show in view page
+# go to post_detail.html
+# add,
+
+<h1>{{post.title}}</h1>
+{{post.content|linebreaks}}
+<h3>Comments</h3>
+# <a href="/2/comments/new/">Write comment</a>
+# But we can use url parser
+<a href="{% url "blog.views.comment_new" post.pk %}">Write comment</a>
+<ul>
+    {% for comment in post.comment_set.all %}
+    <li>
+        {{comment.message}}
+        <small>
+            {{comment.author}}, {{comment.created_at}}
+        </small>
+    </li>
+    {% endfor %}
+</ul>
+
+@
+# go to forms.py
+# replace,
+fields = '__all__'
+# with,
+field = ('author', 'message')
+
+@
+# go to views.py
+# in def comment_new()
+comment = form.save(commit=False)
+comment.post = Post.objects.get(pk=pk)
+comment.save()
+
+
+@
+# Let's make editing comment functionality
+# go to urls.py
+# find urlpatterns
+# add,
+# comment_edit() takes 2 arguments(post_pk ,pk)
+url(r'^(?P<post_pk>\d+)/comments/(?P<pk>\d+)/edit$', 'blog.views.comment_edit')
+
+@
+# go to views.py
+# add,
+def comment_edit(request, post_pk, pk):  
+    # I bring comment to edit
+    comment = Comment.objects.get(pk=post_pk)
+    if request.method == 'POST':
+        # I pass aditional instance to be edited
+        form = CommentForm(request.POST, instance=comment)
+        if form.is_valid():
+            form.save()
+            return redirect('blog.views.post_detail', post_pk)
+    else:
+        form = CommentForm(instance=comment)
+    return render(request, 'blog/post_form.html', {
+        'form':form,
+    })
+
+@
+# go to post_detail.html
+# add,
+# <small> </small>
+# <a href="{% url "blog.views.comment_edit" post.pk comment.pk %}">수정</a>
+
+@
+# go to views.py
+# add,
+from .models import Post, Comment
+
+
+@
+# go to models.py
+# add, under content = models.TextField()
+# Existing post has null in photo field in database
+photo = models.ImageField(blank=True, null=True)
+
+
+@
+# You should install Pillow library for uploading image
+pip install pillow
+
+@
+# Do migration for image fiels
+python manage.py makemigrations blog
+python manage.py migrate
+
+
+@
+# Let's configure position of image
+# go to settings.py
+# Under STATIC_URL = '/static/'
+# create,
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
+
+# In django, there are 2 kind of resources(static and media)
+# static resource means resource which is used in development stage such as css file, javascript file, image and font used in page, etc
+# media resource means resource which user uploads via image fiels or file field of model
+# media resource is uploded into "media" folder by "MEDIA_ROOT = os.path.join(BASE_DIR, 'media')"
+
+@
+# When you use "python manage.py runserver", runserver supports only static resource
+# To resolve this issue, go to urls.py
+# add,
+from django.conf import settings
+
+# under urlpatterns
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+@
+# Let's make content show image
+# go to post_detail.html
+# under <h1>
+{% if post.photo %}
+    <img src="{{post.photo.url}}" />
+{% endif %}
+
+# over <h1>
+<style>
+    img{max-width:100%;}
+</style>
+      </xmp>
+   </BODY>
+</HTML>
