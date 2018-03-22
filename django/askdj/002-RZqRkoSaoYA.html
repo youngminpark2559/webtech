@@ -1,0 +1,150 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+   "http://www.w3.org/TR/html4/strict.dtd">
+<HTML>
+   <HEAD>
+      <TITLE>My first HTML document</TITLE>
+      <style rel="stylesheet" type="text/css">
+body {
+ font-size: 25px;
+ 
+ margin-top: 50px;
+    margin-bottom: 50px;
+    margin-right: 80px;
+    margin-left: 80px;
+    
+    padding-top: 50px;
+    padding-bottom: 50px;
+    padding-right: 80px;
+    padding-left: 80px;
+    
+    line-height:1.6em
+}
+</style>
+      <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    "HTML-CSS" : {
+        availableFonts : ["STIX"],
+        preferredFont : "STIX",
+        webFont : "STIX-Web",
+        imageFont : null
+    }
+});
+</script>
+     <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js" type="text/javascript">    
+    MathJax.Hub.Config({
+        HTML: ["input/TeX","output/HTML-CSS"],
+        TeX: { extensions: ["AMSmath.js","AMSsymbols.js"], 
+               equationNumbers: { autoNumber: "AMS" } },
+        extensions: ["tex2jax.js"],
+        jax: ["input/TeX","output/HTML-CSS"],
+        tex2jax: { inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+                   displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+                   processEscapes: true },
+        "HTML-CSS": { availableFonts: ["TeX"],
+                      linebreaks: { automatic: true } }
+    });
+</script>
+   </HEAD>
+   <BODY>
+002-RZqRkoSaoYA. automatic spell checker
+<xmp>
+@
+You input "Iplaysoccer"
+We see result via ajax call
+Go to network tab in chorome developer tool
+We can see "spellchecker.nhn? callback=window, ...."
+
+@
+# This makes request easier than urllib
+import requests
+url = "https//m.search.naver.com/p/csearch/dcontent/spellchecker.nhn? callback=window.__jindo2_callback._spellingCheck_0& ...."
+requests.get(url)
+# < <Response [200]>
+requests.get(url).text
+< 'window.__jindo2_callback._spellingCheck_0({"message":{"@type":"response" ... <span>I play soccer</span>}})'
+
+@
+As we see 'window.__jindo2_callback._spellingCheck_0({"message":{"@type":"response" ... <span>I play soccer</span>}})', we can know this site uses jsonp
+In "https//m.search.naver.com/p/csearch/dcontent/spellchecker.nhn? callback=window.__jindo2_callback._spellingCheck_0& ....", this site requests url with passing method name to be invoked as callback method
+
+What we should do is to extract "{"message":{"@type":"response" ... <span>I play soccer</span>}}" part
+
+
+@
+Let's try to change callback method
+url = "https//m.search.naver.com/p/csearch/dcontent/spellchecker.nhn? callback=window.mycustomcallback& ...."
+requests.get(url).text
+# < 'window.mycustomcallback({"message":{"@type":"response" ... <span>I play soccer</span>}})'
+
+@
+response = requests.get(url).text
+# we delete what we don't need
+json_string = response.replace('window.mycustomcallback(', '').replace(');', '')
+
+import json
+result = json.loads(json_string)
+result.__class__
+# < dict
+result.keys()
+# < dict_keys(['message'])
+result['message']['result']['html']
+# < "<span>I play soccer</span>"
+
+@
+You create new file, spellchecker.py
+
+import requests
+url = "https//m.search.naver.com/p/csearch/dcontent/spellchecker.nhn"
+params = {
+    'callback': 'window.mycustomcallback',
+    'q': 'Iplaysoccer.'
+}
+
+response = requests.get(url, params=params).text
+print(response)
+python spellchecker.py
+# < 'window.mycustomcallback({"message":{"@type":"response" ... <span>I play soccer</span>}})
+
+response = response.replace(params['_callback'] + '(', '')
+response = response.replace(');', '')
+print(response)
+# < {"message":{"@type":"response" ... <span>I play soccer</span>}}
+
+import json
+# I parse "response" into dictionary type
+response_dict = json.loads(response)
+print(response_dict)
+# < {"message":{"@type":"response", "result": {"errata_count":1, "html":"<span>I play soccer</span>"}}}
+print(response_dict["message"]["result"]["html"])
+# < <span>I play soccer</span>
+
+result_text = response_dict["message"]["result"]["html"]
+
+import re
+result_text = re.sub(r'<\/?.*?>', '', result_text)
+print(result_text)
+python spellchecker.py
+# < I play soccer
+
+@
+I construct above logic as method
+def spellchecker(q):
+    url = "https//m.search.naver.com/p/csearch/dcontent/spellchecker.nhn"
+    params = {
+        'callback': 'window.mycustomcallback',
+        'q': q
+    }
+    response = requests.get(url, params=params).text
+    response = response.replace(params['_callback'] + '(', '')
+    response = response.replace(');', '')
+    response_dict = json.loads(response)
+    result_text = response_dict["message"]["result"]["html"]
+    result_text = re.sub(r'<\/?.*?>', '', result_text)
+    return result_text
+
+if __name__ == '__main__':
+    line = input('')
+    print(spellchecker(line))
+      </xmp>
+   </BODY>
+</HTML>
