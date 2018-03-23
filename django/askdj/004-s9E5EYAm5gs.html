@@ -1,0 +1,307 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+   "http://www.w3.org/TR/html4/strict.dtd">
+<HTML>
+   <HEAD>
+      <TITLE>My first HTML document</TITLE>
+      <style rel="stylesheet" type="text/css">
+body {
+ font-size: 25px;
+ 
+ margin-top: 50px;
+    margin-bottom: 50px;
+    margin-right: 80px;
+    margin-left: 80px;
+    
+    padding-top: 50px;
+    padding-bottom: 50px;
+    padding-right: 80px;
+    padding-left: 80px;
+    
+    line-height:1.6em
+}
+</style>
+      <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    "HTML-CSS" : {
+        availableFonts : ["STIX"],
+        preferredFont : "STIX",
+        webFont : "STIX-Web",
+        imageFont : null
+    }
+});
+</script>
+     <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js" type="text/javascript">    
+    MathJax.Hub.Config({
+        HTML: ["input/TeX","output/HTML-CSS"],
+        TeX: { extensions: ["AMSmath.js","AMSsymbols.js"], 
+               equationNumbers: { autoNumber: "AMS" } },
+        extensions: ["tex2jax.js"],
+        jax: ["input/TeX","output/HTML-CSS"],
+        tex2jax: { inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+                   displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+                   processEscapes: true },
+        "HTML-CSS": { availableFonts: ["TeX"],
+                      linebreaks: { automatic: true } }
+    });
+</script>
+   </HEAD>
+   <BODY>
+004-s9E5EYAm5gs. creating simple api server without using rest-framework
+<xmp>
+@
+You create project
+django-admin startproject jsonmid
+You move to created folder
+cd jsonmid
+You run server
+python manage.py runserver
+
+@
+First, you create blog app
+python manage.py startapp blog
+go to settings.py
+Find INSTALLED_APPS
+add 'blog'
+
+go to urls.py
+find urlpatterns
+add,
+from djando.confg.urls import include, url
+url(r'', include('blog.urls'))
+
+go to blog/urls.py
+add,
+from django.conf.urls import url
+urlpatterns = [
+
+]
+
+go to blog/views.py
+add,
+from django.shortcuts import render
+
+def post_list(request):
+    pass
+
+go to blog/urls.py
+add,
+from . import views
+
+urlpatterns = [
+    url(r'^$', views.post_list),
+]
+
+@
+go to blog/views.py
+add,
+from django.http import JsonResponse
+
+def post_list(request):
+    data = [
+        {'id':1, 'title':'title 1'},
+    ]
+    return JsonResponse(data, safe=False)
+
+runserver and go to localhost:8000
+and you can see json response
+In chrome, you can install jsonview plugin to see fomatted json
+[
+    -{
+        title : "title 1",
+        id : 1
+    }
+]
+
+@
+Create blog/models.py
+add,
+from django.db import models
+
+class Post(models.Model):
+    title = models.CharField(max_length=100)
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+You need to do migration
+python manage.py migrate
+python manage.py makemigrations blog    
+migrate blog
+
+@
+go to blog/admin.py
+Register Post model to admin
+from django.contrib import admin
+from .models import Post
+
+admin.site.register(Post)
+
+@
+Create admin credential
+python manage.py createsuperuser
+
+go to localhost:8000/admin
+
+@
+Write 3 posts
+
+@
+go to blog/views.py
+add,
+from .models import Post
+
+def post_list(request):
+    post_list = []
+    for post in Post.objects.all():
+        post_list.append({
+            'id': post.id,
+            'title': post.title,
+            'content': post.content,                
+        })
+        
+    return JsonResponse(post_list, safe=False)
+
+@
+go to models.py
+add,
+class Article(models.Model):
+    title = models.CharField(max_length=100)
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)    
+
+
+@
+python manage.py makemigrations blog
+python manage.py migrate blog
+
+@
+go to blog/admin.py
+add,
+admin.site.register(Article)
+
+Write 3 posts
+
+@
+go to blog/urls.py
+add,
+url(r'^$', views.article_list)
+
+@
+go to blog/views.py
+add,
+from .models import Post, Article
+
+def article_list(request):
+    article_list = []
+    for article in Article.objects.all():
+        article_list.append({
+            'id': article.id,
+            'title': article.title,
+            'content': article.content,                
+        })
+        
+    return JsonResponse(article_list, safe=False)
+
+@
+go to blog/urls.py
+replace with
+url(r'^posts.json/$', view.post_list)    
+url(r'^articles.json/$', view.article_list)    
+
+add,
+url(r'^recent_post.json/$', view.recent_post_list)    
+
+@
+go to blog/views.py
+
+def recent_post_list(request):
+    article_list = []
+    for article in Post.objects.order_by('-id)[:2]:
+        article_list.append({
+            'id': article.id,
+            'title': article.title,
+            'content': article.content,                
+        })
+        
+    return JsonResponse(article_list, safe=False)
+
+go to localhost:8000/recent_posts.json
+
+
+@
+go to blog/views.py
+add and refactor
+def json_requests(qs):
+    mylist = []
+    for instance in qs:
+        mylist.append({
+            'id':instance.id,
+            'title':instance.title,
+            'content':instance.content,
+        })
+    return JsonResponse(mylist, safe=False)    
+
+def post_list(request):
+    qs = Post.objects.all()        
+    return json_response(qs)    
+
+def recent_post_list(request):
+    qs = Post.objects.order_by('-id')[:2]        
+    return json_response(qs)
+
+def article_list(request):
+    qs = Article.objects.all()        
+    return json_response(qs)
+
+
+@
+middleware in django
+We can designate method which will be called in moment
+before view is invoked and after view is invoked
+
+create blog/middleware.py
+add,
+class JsonResponseMiddleware(object):
+    def process_response(self, request, response):
+        # You make method here
+        return response
+
+@
+go to settings.py
+find, MIDDLEWARE_CLASSES
+you can see default middleware
+add,
+'blog.middleware.JsonResponseMiddleware'
+
+@
+go to blog/middleware.py
+
+class JsonResponseMiddleware(object):
+    def process_response(self, request, response):
+        print('abcde')
+
+        def json_requests(qs):
+            mylist = []
+            for instance in qs:
+                mylist.append({
+                    'id':instance.id,
+                    'title':instance.title,
+                    'content':instance.content,
+                })
+            return JsonResponse(mylist, safe=False)     
+        return response
+
+
+views.py
+def post_list(request):
+    return Post.objects.all()
+
+def recent_post_list(request):
+    return Post.objects.order_by('-id')[:2]
+
+def article_list(request):
+    return Article.objects.all()    
+      </xmp>
+   </BODY>
+</HTML>
