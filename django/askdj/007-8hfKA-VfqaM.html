@@ -1,0 +1,260 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+   "http://www.w3.org/TR/html4/strict.dtd">
+<HTML>
+   <HEAD>
+      <TITLE>My first HTML document</TITLE>
+      <style rel="stylesheet" type="text/css">
+body {
+ font-size: 25px;
+ 
+ margin-top: 50px;
+    margin-bottom: 50px;
+    margin-right: 80px;
+    margin-left: 80px;
+    
+    padding-top: 50px;
+    padding-bottom: 50px;
+    padding-right: 80px;
+    padding-left: 80px;
+    
+    line-height:1.6em
+}
+</style>
+      <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    "HTML-CSS" : {
+        availableFonts : ["STIX"],
+        preferredFont : "STIX",
+        webFont : "STIX-Web",
+        imageFont : null
+    }
+});
+</script>
+     <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js" type="text/javascript">    
+    MathJax.Hub.Config({
+        HTML: ["input/TeX","output/HTML-CSS"],
+        TeX: { extensions: ["AMSmath.js","AMSsymbols.js"], 
+               equationNumbers: { autoNumber: "AMS" } },
+        extensions: ["tex2jax.js"],
+        jax: ["input/TeX","output/HTML-CSS"],
+        tex2jax: { inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+                   displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+                   processEscapes: true },
+        "HTML-CSS": { availableFonts: ["TeX"],
+                      linebreaks: { automatic: true } }
+    });
+</script>
+   </HEAD>
+   <BODY>
+007-8hfKA-VfqaM. using ajax and json in django
+<xmp>
+@
+_post_list.html
+
+# When request is ajax, we will form request via _post_list.html
+
+{% for post in post_list %}
+<li>
+<a href="{% url "blog:post_detail", post.pk %}">{{ post.title }}</a>
+</li>
+{% endfor %}
+
+@
+blog/post_detail.html
+<h1>{{ post.title }}</h1>
+
+{% if post.photo %}
+    <img src="{{ post.photo.url }}" style="max-width: 100px;"/>
+{% endif %}
+
+{{ post.content|linebreaks }}
+
+@
+blog/post_list.html
+
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf8" />
+        <script src="http://code.jquery.com/jquery-1.12.1.min.js"></scirpt>
+    </head>
+    <body>
+        <a href="#" id="page_2">load contents of page2</a>
+        <a href="#" id="page_3">load contents of page3</a>
+        # I implement ajax call
+        <script>
+            $(function(){
+                # I create method which takes page
+                var load_page = function(page){
+                    # This sends ajax request to server as get request, by same address, so we put empty character(current address to current server)
+                    # {page: 2}: parameter
+                    # callback
+                    # data : response from server
+                    $.get('', {page: page}, function(data){
+                        console.log('---response---');
+                        console.log(data)
+                        for(var i=0;i<data.length;i++){
+                            var post = data[i];
+                            console.log(post.title);
+                            console.log(post.photo_url);
+                            var html = '<li>' +
+                                post.title +
+                                '<img src="'+ post.photo_url + '" style="max_width: 100px;" />' +
+                                '</li>';
+                            $("#post_list").append(html)                                
+                        }
+                        # You find id='post_list' and append response
+                        # $("#post_list").append(response);
+                    });
+                };
+
+                # If user clicks id="page_2", this invokes function()
+                $('#page_2').click(function(){
+                    load_page(2);
+                    return false;
+                });
+                $('#page_3').click(function(){
+                    load_page(3);
+                    return false;
+            });
+        </script>
+        <ul id='post_list'>
+            {% include "blog/_post_list.html" %}
+        </ul>
+    </body>
+</html>
+
+
+@
+blog/views.py
+
+# django provides list view from class view
+# We implement pagination by using list view based on class view
+# We will use DetailView
+from django.views.generic import ListView, DetailView
+from django.shortcuts import render
+from .models import Post
+
+from django.http import JsonResponse
+
+# This is replaced with ListView
+# def post_list(request):
+#     post_list = Post.objects.all()
+#     return render(request, 'blog/post_list.html', {
+#         'post_list': post_list,
+#     })
+
+class AjaxListView(ListView):
+    # I override this method from ListView
+    # In view, when you form response,
+    # this method decides which template is used to form response
+    def get_template_names(self):
+        # I can access to request
+        # I check if current request is ajax request or not
+        if self.request.is_ajax():
+            # I find other template(_post_list.html)
+            app_label = self.object_list.model._meta.app_label
+            model_name = self.object_list.model._meta.model_name
+            return ['%s/_%s_list.html' % (app_label, model_name)]
+        # If request is not ajax request, I invoke base class,
+        # and then use exsiting template to give response    
+        return super(AjaxListView, self).get_template_names()
+
+# This class deals with AjaxJson request
+class AjaxJsonListView(ListView):
+    # From class ListView, when it generates template response,
+    # render_to_response() is invoked
+    # And I override it
+    # Reference django/views/generic/list.py class ListView
+    # which inherits from MultipleObjectTemplateResponseMixin and BaseListView
+    # You can see it generates response via render_to_response()
+    def render_to_response(self, context, **response_kwargs):
+        # If request is ajax, we will give json response
+        if self.request.is_ajax():
+            post_list = []
+            for post in context['post_list']:
+                post_list.append({
+                    'id':post.id,
+                    'title':post.title,
+                    'content':post.content,
+                    'photo_url':post.photo.url
+                })
+                
+            return JsonResponse(post_list, content_type='application/json', safe=false)
+    # If request is not ajax, it invokes AjaxJsonListView
+    return super(AjaxJsonListView, self).render_to_response(context, **response_kwargs)
+
+
+
+# We implement pagination
+post_list = AjaxJsonListView.as_view(model=Post, paginate_by=2)
+
+# We use DetailView
+post_detail = DetailView.as_view(model=Post)
+
+@
+urls.py
+from django.conf import settings
+from django.conf.urls import include, url
+from django.conf.urls.static import static
+from django.contrib import admin
+
+urlpatterns = [
+    url(r'^admin/', admin.site.urls),
+    # This is for post_detail views
+    url(r'^(?P<pk>\d+)/$', views.post_detail, name='post_detail'),
+]
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+@
+blog/models.py
+
+class Post(models.Model):
+    title = models.CharField(max_length=100)
+    content = models.TextField()
+    photo = models.ImageField()
+
+    # I override __str__()
+    # This makes post title show
+    def __str__(self):
+        return self.title
+
+@
+settings.py
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+
+@
+blog/admin.py
+
+from django.contrib import admin
+from .models import Post
+
+# I create admin for Post model
+admin.site.register(Post)
+
+
+@
+We do migration
+python manage.py migrate
+python manage.py makemigrations blog
+python manage.py migrate blog
+
+@
+python manage.py createsuperuser
+localhost:8000/admin
+Write 4 posts
+
+
+@
+copy http://code.jquery.com/jquery-1.12.1.min.js
+
+@
+View page takes "request" argument
+"request" is instance (which has all information sent from client) of http class
+      </xmp>
+   </BODY>
+</HTML>
