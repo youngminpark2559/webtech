@@ -1,0 +1,130 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+   "http://www.w3.org/TR/html4/strict.dtd">
+<HTML>
+   <HEAD>
+      <TITLE>My first HTML document</TITLE>
+      <style rel="stylesheet" type="text/css">
+body {
+ font-size: 25px;
+ 
+ margin-top: 50px;
+    margin-bottom: 50px;
+    margin-right: 80px;
+    margin-left: 80px;
+    
+    padding-top: 50px;
+    padding-bottom: 50px;
+    padding-right: 80px;
+    padding-left: 80px;
+    
+    line-height:1.6em
+}
+</style>
+      <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    "HTML-CSS" : {
+        availableFonts : ["STIX"],
+        preferredFont : "STIX",
+        webFont : "STIX-Web",
+        imageFont : null
+    }
+});
+</script>
+     <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js" type="text/javascript">    
+    MathJax.Hub.Config({
+        HTML: ["input/TeX","output/HTML-CSS"],
+        TeX: { extensions: ["AMSmath.js","AMSsymbols.js"], 
+               equationNumbers: { autoNumber: "AMS" } },
+        extensions: ["tex2jax.js"],
+        jax: ["input/TeX","output/HTML-CSS"],
+        tex2jax: { inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+                   displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+                   processEscapes: true },
+        "HTML-CSS": { availableFonts: ["TeX"],
+                      linebreaks: { automatic: true } }
+    });
+</script>
+   </HEAD>
+   <BODY>
+003-Axjz12E_jyA. crawling song list from online music site
+<xmp>
+@
+Let's try search singer on site
+Then, you see "network" tab in developer tool
+You focus on "index.json?jscallback=jQuery1910927..."
+There are 3 "index.json?jscallback=jQuery1910927..." because this music site request each word to server in real time like for 's', 'u', 'n'
+
+@
+You create melon_search.py file
+
+import requests
+url = 'http://www.melon.com/search/keyword/index.json?jscallback=jQuery193484748_3848737&query=%374ED4%90&_=193845'
+
+response = requests.get(url).text
+
+@
+Let's separate url and parameters
+url = 'http://www.melon.com/search/keyword/index.json'
+params = {
+    'jscallback'='jQuery193484748_3848737',
+    'query'='sun'
+}
+
+response = requests.get(url, params=params).text
+
+# I refine result
+json_string = response.replace(params['jscallback'] + '(', '').replace(');', '')
+import json
+result_dict = json.loads(json_string)
+# < data represented in dictionary type
+
+result_dict.key()
+# < dict_keys(['KEYWORD', 'ARTISTCONTENTS', ..., 'httpsDomain'])
+print(result_dict['SONGCONTENTS'])
+
+for song in result_dict['SONGCONTENTS']:
+    
+    print('''{SONGNAME} {ALBUMNAME} {ARTISTNAME}
+    - http://www.melon.com/song/detail.htm?songId={SONGID}'''.format(**song))
+    # < songname albumname artistname
+    # http://www.melon.com/song/detail.htm?songId=38374
+
+
+@
+# Let's make above code as method
+def melon_search(q):
+    url = 'http://www.melon.com/search/keyword/index.json'
+    params = {
+        'jscallback'='jQuery193484748_3848737',
+        'query'=q
+    }
+
+    response = requests.get(url, params=params).text
+
+    # I refine result
+    json_string = response.replace(params['jscallback'] + '(', '').replace(');', '')
+    import json
+    result_dict = json.loads(json_string)
+    # < data represented in dictionary type
+
+    if 'SONGCONTENTS' not in result_dict:
+        print('not found')
+    else:        
+        result_dict.key()
+        # < dict_keys(['KEYWORD', 'ARTISTCONTENTS', ..., 'httpsDomain'])
+        print(result_dict['SONGCONTENTS'])
+
+        for song in result_dict['SONGCONTENTS']:
+
+            print('''{SONGNAME} {ALBUMNAME} {ARTISTNAME}
+            - http://www.melon.com/song/detail.htm?songId={SONGID}'''.format(**song))
+            # < songname albumname artistname
+            # http://www.melon.com/song/detail.htm?songId=38374
+
+if __name__ == '__main__':
+    line = input()
+    melon_search(line)
+
+      </xmp>
+   </BODY>
+</HTML>
