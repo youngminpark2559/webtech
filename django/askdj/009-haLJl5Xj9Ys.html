@@ -1,0 +1,398 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+   "http://www.w3.org/TR/html4/strict.dtd">
+<HTML>
+   <HEAD>
+      <TITLE>My first HTML document</TITLE>
+      <style rel="stylesheet" type="text/css">
+body {
+ font-size: 25px;
+ 
+ margin-top: 50px;
+    margin-bottom: 50px;
+    margin-right: 80px;
+    margin-left: 80px;
+    
+    padding-top: 50px;
+    padding-bottom: 50px;
+    padding-right: 80px;
+    padding-left: 80px;
+    
+    line-height:1.6em
+}
+</style>
+      <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    "HTML-CSS" : {
+        availableFonts : ["STIX"],
+        preferredFont : "STIX",
+        webFont : "STIX-Web",
+        imageFont : null
+    }
+});
+</script>
+     <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js" type="text/javascript">    
+    MathJax.Hub.Config({
+        HTML: ["input/TeX","output/HTML-CSS"],
+        TeX: { extensions: ["AMSmath.js","AMSsymbols.js"], 
+               equationNumbers: { autoNumber: "AMS" } },
+        extensions: ["tex2jax.js"],
+        jax: ["input/TeX","output/HTML-CSS"],
+        tex2jax: { inlineMath: [ ['$$$','$$$'] ],
+                   displayMath: [ ['$$','$$'] ],
+                   processEscapes: true },
+        "HTML-CSS": { availableFonts: ["TeX"],
+                      linebreaks: { automatic: true } }
+    });
+</script>
+   </HEAD>
+   <BODY>
+009-haLJl5Xj9Ys. using ajax post call in django
+<xmp>
+@
+static/site.css
+
+body{
+    padding-top: 60px;
+    padding-bottom: 60px;
+}
+
+@
+static/jquery.csrf.js
+
+# using jQuery
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+var csrftoken = getCookie('csrftoken');
+
+
+function csrfSafeMethod(method) {
+    // these HTTP methods do not require CSRF protection
+    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+}
+$.ajaxSetup({
+    beforeSend: function(xhr, settings) {
+        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+        }
+    }
+});
+
+
+@
+post_delete_confirm.html
+# If post request is sent in same address, we don't need to fill action
+<form action="" method="post">
+    {% csrf_token %}
+    sure to delete?
+    <input type="submit" value="yes, delete" />
+</form>
+
+
+
+@
+ _post_list.html
+
+{% for post in post_list %}
+<tr id="post-{{ post.id }}">
+    <td>
+        {{ post.id }}
+        {{ post.title }}
+    </td>
+    <td>
+        # We will implement ajax delete request
+        # This method doesn't need to reload page
+        <a href="{% url "blog:post_detail" post.pk %}">{{ post.title }}</a>
+    </td>
+    <td>
+        # I make dynamic hyperlink with url named blog:post_detail and post.pk parameter
+        # I give this tag name of 'post-delete-btn'
+        <a href="{% url "blog:post_delete" post.pk %}" class= "post-delete-btn btn btn-danger btn-sm" data-target-id="post-{{ post.id }}">
+            delete post
+        </a>
+    </td>
+</tr>
+{% endfor %}
+
+
+@
+post_list.html
+
+# This loads jquery.csrf.js static file {% load staticfiles %}
+
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf8" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" />
+    <link rel="stylesheet" href="{% static "site.css" %}"
+    <script src="http://code.jquery.com/jquery-1.12.1.min.js"></script>
+    <script src="{% static " jquery.csrf.js " %}"></script>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">Start Bootstrap</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive"
+                aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="#">Home
+                            <span class="sr-only">(current)</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Services</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Contact</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+    <div class="row">
+        <div class="col-sm-12">
+            <p>
+                <a href="#" id="page_2" class="btn btn-default">load page 2</a>
+                <a href="#" id="page_3" class="btn btn-default">load page 3</a>
+            </p>
+            <table id="post_list" class=table table-hover table-boardered>
+                <thead>
+                    <tr>
+                        <th>id</th>
+                        <th>title</th>
+                        <th>delete</th>
+                    </tr>
+                </thead>
+                <tbody>
+                   {% include "blog/_post_list.html" %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+    <script>
+        $(function () {
+            var load_page = function (page) {
+                $.get('', { page: page }, function (data) {
+                    console.log('---- response ----');
+                    console.log(data);
+                    for (var i = 0; i < data.length; i++) {
+                        var post = data[i];
+                        console.log(post.title);
+                        console.log(post.photo_url);
+                        var html = '<tr><td>' + post.title + '</td></tr>';
+                        console.log(html);
+                        $("#post_list tbody").append(html);
+                    }
+                    // $("#post_list").append(response);
+                });
+            };
+            $('#page_2').click(function () {
+                load_page(2);
+                return false;
+            });
+            $('#page_3').click(function () {
+                load_page(3);
+                return false;
+            });
+        });
+    </script>
+
+    
+
+    <script>
+        $(function () {
+            # If this tag is clicked, I invoke function
+                $('#post_list .post-delete-btn').click(function () {
+                    var url = $(this).attr('href');
+                    var target_id = $(this).data('target-id');
+
+                    if (confirm("sure to delete?")) {
+                        $.post(url).done(function () {
+                            $('#' + target_id).remove();
+                        }).fail(function () {
+                            alert('fail');
+                        });
+                    }
+                    return false;
+                });
+        });
+    </script>
+</body>
+</html>
+
+
+@
+models.py
+
+from django.db import models
+
+class Post(models.Model):
+    title = models.CharField(max_length=100)
+    content = models.TextField()
+
+
+@
+views.py
+
+from django.http import JsonResponse
+# I use built-in ListView, DetailView template for view
+from django.views.generic import ListView, DetailView
+# I use Post model in this view from all models
+from .models import Post
+from django.shortcuts import get_object_or_404, redirect, render 
+
+def post_list(request):
+
+
+class AjaxListView(ListView):
+    def get_template_names(self):
+        if self.request.is_ajax():
+            app_label = self.object_list.model._meta.app_label
+            model_name = self.object_list.model._meta.model_name
+            return ['%s/_%s_list.html' % (app_label, model_name)]
+        return super(AjaxListView, self).get_template_names()
+
+
+class AjaxJsonListView(ListView):
+    def render_to_response(self, context, **response_kwargs):
+        if self.request.is_ajax():
+            post_list = []
+            for post in context['post_list']:
+                post_list.append({
+                    'id': post.id,
+                    'title': post.title,
+                    'content': post.content,
+                })
+            return JsonResponse(post_list, content_type='application/json', safe=False)
+        return super(AjaxJsonListView, self).render_to_response(context, **response_kwargs)
+# I use AjaxJsonListView as view by using Post as model and showing 10 posts in one page
+post_list = AjaxJsonListView.as_view(model=Post, paginate_by=10)
+# I use DetailView as view by using Post as model
+post_detail = DetailView.as_view(model=Post)
+
+# If "ajax delete" url comes, "urls..py" captures it
+# "urls..py" sends flow to this method
+# with passing "request object" which has all information and "pk"
+def post_delete(request, pk)
+    post = get_object_or_404(Post, pk=pk)
+    # If request is POST,
+    if request.method == 'POST':
+        # I actually delete post in jquery ajax way
+        post.delete()
+        # After delete, I redirect user to url named blog:post_list
+        return redirect('blog:post_list')
+    # If request is GET, I bring user to page to ask "really delete?"
+    return render(request, 'blog/post_delete_confirm.html', {
+        'post': post,
+
+    })
+@
+urls.py
+
+from django.conf.urls import url
+from . import views
+
+urlpatterns = [
+    # I define this patter of url named 'post_list'
+    # which is used when creating dynamic url
+    url(r'^$', views.post_list, name = 'post_list'),
+    url(r'(?P<pk>\d+)/$', views.post_detail, name = 'post_detail'),
+    # This url mapping rule is for ajax delete
+    url(r'(?P<pk>\d+)/delete/$', views.post_delete, name = 'post_delete'),
+]
+
+
+@
+urls.py (admin)
+
+from django.conf.urls import include, url
+from django.contrib import admin
+
+urlpatterns = [
+    url(r'^admin/', admin.site.urls),
+    url(r'', include('blog.urls', namespace='blog')),
+]
+
+@
+settings.py
+
+INSTALLED_APPS=[
+    # ...
+    # This makes migration, template finding, etc possible 
+    'blog'
+]
+
+STATIC_URL = '/static/'
+# This is for jquery_csrf.js
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'ajax2nd', 'static'),
+)
+
+
+@
+We will talk about POST ajax
+
+You create new project
+django-admin startproject ajax2nd
+cd ajax2nd
+python manage.py runserver
+
+@
+You create new app
+python manage.py startapp blog
+
+@
+python manage.py migrate
+python manage.py runserver
+
+@
+After building model, we perform migration
+python manage.py makemigrations blog
+python manage.py migrate blog
+python manage.py run server
+
+@
+We create 1000 posts by using django shell
+python manage.py shell
+from blog.models import Post
+for i in range(1000):
+    Post.objects.create(title = 'title {}'.format(i), content = 'content {}'.format(i))
+    # < title 1
+    # < content 1
+Post.objects.all().count()
+# < 1000
+
+@
+I need to make setting file for ajax post call
+docs.djangoproject.com/en/1.9/ref/csrf
+I create static/jquery.csrf.js
+paste copied code into it
+      </xmp>
+   </BODY>
+</HTML>
