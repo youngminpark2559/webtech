@@ -50,85 +50,65 @@ MathJax.Hub.Config({
 <xmp>
 @
 Spider class
-You disgnate information of which sites you will crawl into Spider class
-You disgnate information of which ways you will use to crawl into Spider class
-You disgnate information of which parts of site you will scrap into Spider class
+You designate 'scraping rule' and 'crawling rule' in Spider class
 
 Selector class
-When you designate information of which parts of site you will scrap into Spider class,
-you need to have "unifided way" of representing html tags you want to select on web
-Selector class provides machanism to conviniently select html tags
-Selector class is built based on one of famous parsing library lxml
-When you use Selector class, you can use CSS selector to select specific html tag
-You can use XPath (as recommended way) which is specialized to select html tags
+You can select specific element from html code
+Selector class was built based on lxml(parsing library)
+You can use css selector and xpath(recommended)
 
 Item class
-This is user custom data structure which is used to store scraped page
+This is custom data structure which is used when stroing scraped page
 
 Item Pipeline class
-You can process and export data which is stored via Item class
+You designate rules how to deal with each item in Item Pipeline class
+Item is processed by this rule
 
 Settings class
-You can configure detailed settings of how Spider or Item Pipeline work
-You can use robots.txt of each web site to configure settings for scraping bot
+You can configure detailed settings for Spider and Item Pipeline
+You can use robots.txt in Settings class
 
 
-@
-# I try scraping web page by using "scrapy shell" and "chrome developer tool"
-
+# @
 # activate py27
 scrapy shell "http://www.dmoz.org/Computers/Programming/Languages/Python/Books"
-# You're now in IPython IDE
 # Open chrome developer tool
-# GO to element tab 
-# You can see html source code of current page
-# Click top left button
-# Hover mouse on element which you want to scrap
-# Go to selected element and right click on it
-# Go to Copy and Copy XPath
-# You get XPath which is related to element what you hover on
-# On scrapy shell, response.xpath('//*[@id="site-list-content"]/div[1]/div[3]/a/div')
-# Variable response stores response information when you do scrapy shell "http://www.dmoz.org/Computers/Programming/Languages/Python/Books"
-# Now, you got Selector object which contains corresponding element
+# GO to element tab(shift c) 
+# Copy element as xpath or anything
+# On scrapy shell,
+response.xpath('//*[@id="site-list-content"]/div[1]/div[3]/a/div')
+# Object response stores scraped information
+# "http://www.dmoz.org/Computers/Programming/Languages/Python/Books"
+# Now, you will get Selector object which contains corresponding element
 
-@
-# XPath
-'//*[@id="site-list-content"]/div[1]/div[3]/a/div/text()'
+# @
+# XPath concept
+# element//*condition
+# Find all descendents with all kind(*) of element, from them, select elements which satisfies condition
 
-// : This inspects all descendent elements of standard element (standard element//conditions)
-From all descendent elements, find elements satisfying conditions
-If // shows up most fisrt area, standard element becomes html tag which is the most top tag
-And it finds all descendent elements (not only direct child elements) which satisfy conditions
+# element/*condition
+# Find direct child with all kind(*) of element, from them of all kind(*), select elements which satisfies condition
 
-/ : This inspects direct child elements of standard element (standard element/conditions)
-From direct child elements, find elements satisfying conditions
-If / shows up most fisrt area, standard element becomes html tag which is the most top tag
-And it finds all direct child elements which satisfy conditions
+# Index in xpath starts with 1
 
-* : It will inspect all elements which are decorated by all kind of tag
+# @
+# '//*[@id="site-list-content"]/div[1]/div[3]/a/div/text()'
+# element: html
+# //: find all descendent with all kind(*) of html
 
-[@id="site-list-content"] : It will find all elements which are decorated by all kind of tag
-I give more detailed condition for some elements
-It will find elements which hava id="site-list-content"
-
-[1] : If multiple elements satisfy specified condition, you can specify particular element by index number which starts with 1
-
-/text() : It extracts text part from elements you found
-
-@
+# Use example
+response.xpath('//*[@id="site-list-content"]/div[1]/div[3]/a/div')
 response.xpath('//*[@id="site-list-content"]/div[1]/div[3]/a/div/text()')
 response.xpath('//*[@id="site-list-content"]/div[1]/div[3]/a/div/text()').extract()
-# You get actual data which is got by inspect via data stored in Selector class
-# ['Core Python Programming ']
-
+# < ['Core Python Programming ']
 response.xpath('//*[@id="site-list-content"]/div[1]/div[3]/a/div/text()').extract()[0]
-# 'Core Python Programming '
+# < 'Core Python Programming '
 
-@
-# Scraping title text for all item on "Sites list"
+# @
+# We can bring all 'title text' by using for loop
 titles = response.xpath('//*[@id="site-list-content"]/div')
 title = titles[0]
-title.xpath('./div[3]/a//div/text()')
+# title.xpath('./div[3]/a//div/text()')
 for title in titles:
     print(title.xpath('./div[3]/a//div/text()'))
       </xmp>
