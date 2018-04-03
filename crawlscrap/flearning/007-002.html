@@ -46,7 +46,7 @@ MathJax.Hub.Config({
 </script>
    </HEAD>
    <BODY>
-007-002. installing scrapy and selenium under Windows
+007-002. install scrapy and selenium
 <xmp>
 @
 # Old days, scrapy was supported only by python 2
@@ -88,20 +88,27 @@ python --version
 
 @
 # We installed scrapy and selenium library with webdriver
-# Let's test scrapy
-# move to c:/users/username
-(py27) scrapy shell "https://www.flearning.net/classes/15"
 
-# Let's test selenium
-(py27) jupyter notebook
+@
+scrapy shell "https://www.flearning.net/classes/15"
+response.text
+
+# @
 from selenium import webdriver
-browser = webdriver.Chrome("C:\Users\Username\chromedriver.exe")
-# And you can see opening browser
+browser=webdriver.Chrome('/home/young/chromedriverfolder')
+# < And you can see opening browser
 
 # You input site address which you want to open on selenium browser with chromedriver
 browser.get("http://flearing.net")
-# Terminate browser
+# You can terminate browser
 browser.quit()
-      </xmp>
+
+@
+Install in linux
+conda scrapy
+conda selenium
+https://sites.google.com/a/chromium.org/chromedriver/downloads
+/home/young/chromedriverfolder/chromedriver.exe
+</xmp>
    </BODY>
 </HTML>
