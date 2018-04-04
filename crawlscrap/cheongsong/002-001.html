@@ -37,8 +37,8 @@ MathJax.Hub.Config({
                equationNumbers: { autoNumber: "AMS" } },
         extensions: ["tex2jax.js"],
         jax: ["input/TeX","output/HTML-CSS"],
-        tex2jax: { inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-                   displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+        tex2jax: { inlineMath: [ ['$$$','$$$'] ],
+                   displayMath: [ ['$$$$','$$$$'] ],
                    processEscapes: true },
         "HTML-CSS": { availableFonts: ["TeX"],
                       linebreaks: { automatic: true } }
@@ -46,14 +46,17 @@ MathJax.Hub.Config({
 </script>
    </HEAD>
    <BODY>
-002-001. crawling news articles (1)
+002-001. collect news articles (1)
 <xmp>
-@
+# @
 import requests
 from bs4 import BeautifulSoup
 
+# I request url to its server and I get response
 r=requests.get("http://news.naver.com/main/list.nhn?mode=LSD&mid=sec&sid1=100")
+# I extract content from response
 c=r.content
+# I parse contents by html parser
 soup=BeautifulSoup(c,"html.parser")
 
 # ul class=type06_headline -> all articles
@@ -65,17 +68,16 @@ soup=BeautifulSoup(c,"html.parser")
 # Find "ul" with "class=type06_headline"
 all=soup.find("ul",{"class":"type06_headline"})
 
-# If you want to store "li" elements, you can use find_all() on "all"
-all2 = soup.find_all("li")
-# < all2 = ["a", "b", "c", ...]
-# > We want to bring article titles
+# If you want to store all "li" elements, you can use find_all() on "all"
+all2=all.find_all("li")
+# < all2=["a","b","c",...]
+# We want to bring article titles
 for item in all2:
-    title = item.find("dt", {"class":""}).text.replace("\t", "").replace("\n", "")
+    title=item.find("dt",{"class":""}).text.replace("\t","").replace("\n","")
     # We want to remove front whitespace
-    # We bring text only from 2 to end
-    modifiedTitle = title[2:len(title)+1]
+    # so, we bring text only from 2 to end
+    modifiedTitle=title[2:len(title)+1]
     print(modifiedTitle)
-
 
 # getImageSrc() finds address of image
 # <dt class="photo">
@@ -87,43 +89,53 @@ def getImageSrc():
     # First, we find dl
     dl=all.find_all("dl")
     for item2 in dl:
-        # If we don't run into error, in other words, if we found dl
+        # If we don't run into error,
+        # in other words, if we found dl
         try:
             # We find dt with class=photo
-            # And then, on result, we find img
+            # And then,on result, we find img
             img=item2.find("dt",{"class":"photo"}).find("img")
             # I print value of src attribute from img
             print(img['src'])
         # There can be articles without images
         # In this case, there is no img
-        except :
+        except:
             print("No image")
 
 # This method finds title and address of article
 def getLinkAndTitle():
     # Find all elements which belong to dl
-    dl = all.find_all("dl")
+    dl=all.find_all("dl")
     for item2 in dl:
         # On dl, find dt with class=""
-        # On result, find a
-        link = item2.find("dt",{"class":""}).find("a")
-        # I print value of href from link
+        # On result, find a elements
+        link=item2.find("dt",{"class":""}).find("a")
+        # I print value of href from a element
         print(link['href'])
-        # I remove \t, \n, whitespace
+        # I remove \t, \n, first whitespace
         print(link.text.replace("\t","").replace("\n","")[1:len(link.text)+1])
 
-
-# This method finds contents of article
-def getContent ():
-    dl = all.find_all("dl")
+# This finds contents of article
+def getContent():
+    # Find dl
+    dl=all.find_all("dl")
     for item2 in dl:
         try:
-            content = item2.find("dd")
+            # On dl, find dd
+            content=item2.find("dd")
+            # Extract text from content, and remove \t, \n
+            # and then, split text by "..."
+            # # and then, select first element
             print(content.text.replace("\t","").replace("\n","").split("...")[0])
+            # On content, find span with class=writing
+            # and extract text
             print(content.find("span",{"class":"writing"}).text)
+            # On content, find span with class=date
+            # and extract text
             print(content.find("span",{"class":"date"}).text)
         except:
-            print("No Content") 
-      </xmp>
+            print("No Content")
+ 
+</xmp>
    </BODY>
 </HTML>
