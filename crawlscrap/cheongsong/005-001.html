@@ -37,8 +37,8 @@ MathJax.Hub.Config({
                equationNumbers: { autoNumber: "AMS" } },
         extensions: ["tex2jax.js"],
         jax: ["input/TeX","output/HTML-CSS"],
-        tex2jax: { inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-                   displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+        tex2jax: { inlineMath: [ ['$$$','$$$'] ],
+                   displayMath: [ ['$$$$','$$$$'] ],
                    processEscapes: true },
         "HTML-CSS": { availableFonts: ["TeX"],
                       linebreaks: { automatic: true } }
@@ -46,49 +46,50 @@ MathJax.Hub.Config({
 </script>
    </HEAD>
    <BODY>
-005-001. selenium library
+005-001. selenium, auto click
 <xmp>
-@
-# You should install selenium
+# @
+# Install selenium
 pip3 install selenium
 
 # To use selenium chrome browser, you should install chrome webdriver
 
-@
-# BeautifulSoup proceeds request in backend
+# @
+# beautifulsoup proceeds request in backend
 # Selenium proceeds request via chrome browser
-# It means, if you don't hide browser window, it shows up to user
+# It means, if you don't explicitly hide browser window,
+# browser will show up to user
 
-# I access to web page via chrome browser
-# I bring all tags via css syntax or xpath syntax 
-# I define, if tag has id=py, I order selenium to click that tag
+# I can access to web page via chrome browser
+# I can bring all tags via css selector or xpath selector
+# If tag has id=py, I order selenium to click that tag
 
-# Using BeautifulSoup and selenium is much beneficial
+# Using beautifulsoup and selenium together is much beneficial
 
-@
+# @
 # Let's try automatical clicks
 
 from selenium import webdriver
 import time
 
-browser = webdriver.Chrome("/Users/username/chromedriver")
+browser=webdriver.Chrome("/home/young/chromedriverfolder/chromedriver")	
 browser.get("http://python.org")
 
-# I use css selector
-# I get menus
-menus = browser.find_elements_by_css_selector('#top ul.menu li')
+# Use css selector
+# id=top, all descendant, tag ul, class menu, all descendant, li
+menus=browser.find_elements_by_css_selector("#top ul.menu li")
 
-pypi = None
+pypi=None
 
 for m in menus:
-    if m.text == "PyPI":
-        pypi = m
+    if m.text=="PyPI":	
+        pypi=m
     print(m.text)
 
 pypi.click()
 time.sleep(5)
 browser.quit()
  
-      </xmp>
+</xmp>
    </BODY>
 </HTML>
