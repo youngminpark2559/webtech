@@ -37,8 +37,8 @@ MathJax.Hub.Config({
                equationNumbers: { autoNumber: "AMS" } },
         extensions: ["tex2jax.js"],
         jax: ["input/TeX","output/HTML-CSS"],
-        tex2jax: { inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-                   displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+        tex2jax: { inlineMath: [ ['$$$','$$$'] ],
+                   displayMath: [ ['$$$$','$$$$'] ],
                    processEscapes: true },
         "HTML-CSS": { availableFonts: ["TeX"],
                       linebreaks: { automatic: true } }
@@ -46,187 +46,205 @@ MathJax.Hub.Config({
 </script>
    </HEAD>
    <BODY>
-003-002. crawling news articles version2
+003-002. collect news articles based on user input
 <xmp>
-@
-# You should install libraries
+# @
+# Install libraries
 # pip3 install pandas
 # pip3 install glob2
 
-@
-import requests, operator, pandas, glob2
+# @
+import requests,operator,pandas,glob2
 from bs4 import BeautifulSoup
 from datetime import datetime
 
 # This method crawls based on "date" and "pageCount"
-def crawlingData(date, pageCount):
-
+def crawlingData(date,pageCount):
     # I store current time into "now"
-    now = datetime.now()
-    # This is holder which will be appended
-    l = []
-
+    now=datetime.now()
+    # Placeholder
+    l=[]
     # If user inputs 4 as pageCount,
     # total pages will be from 1 to 4
-    for pagecount in range(1, int(pageCount)):
-        # This dynamically accesses to web page based on data which user inputs
-        r = requests.get("http://news.naver.com/main/list.nhn?mode=LSD&mid=sec&sid1=100&date=" + str(date) + "&page=" + str(pagecount))
-        # I bring contents from response and assign it into c
-        c = r.content
+    for pagecount in range(1,int(pageCount)):
+        # Following dynamically accesses to web page based on data which user inputs
+        r=requests.get("http://news.naver.com/main/list.nhn?mode=LSD&mid=sec&sid1=100&date="\
+                    +str(date)+"&page="+str(pageCount))
+        # I bring contents from response
+        c=r.content
         # I parse contents into html
-        soup = BeautifulSoup(c, "html.parser")
-        # I find all "li" from soup html
-        all = soup.find_all("li")
-
+        soup=BeautifulSoup(c,"html.parser")
+        # I find all "li" from parsed html
+        all=soup.find_all("li")
         for item in all:
-            # I find all "dl" from "li"
+            # Find all "dl" from "li"
             for item2 in item.find_all("dl"):
-                # This is holder
-                d = {}
+                # Placeholder
+                d={}
+                # Find "dt" with class="" from "dl"
+                # On result, find "a"
                 try:
-                    # I find "dt" with class="" from "dl"
-                    # On result, I find "a"
-                    linkTag = item2.find("dt", {"class": ""}).find("a")
-                    # I find "href" from "a"
-                    # And I assign it into value of "LinkSrc" key in dictionary "d"
-                    d["LinkSrc"] = linkTag['href']
-                    # I find text from "a"
-                    # I remove "\t", "\n", ",", """, "\r", "first whitespace"
-                    # I assign it into into value of "Title" key in dictionary "d"
-                    d["Title"] = linkTag.text.replace("\t", "").replace("\n", "").replace(",", "").replace('"',"").replace("\r", "")[1:len(linkTag.text) + 1]
+                    linkTag=item2.find("dt",{"class":""}).find("a")
+                    # Find "href" from "a"
+                    # And assign value of "href" into value of "LinkSrc" key in "d"
+                    d["LinkSrc"]=linkTag["href"]
+                    # Find text from "a"
+                    # Remove "\t", "\n", ",", """, "\r", "first whitespace"
+                    # Assign processed text into value of "Title" key in "d"
+                    d["Title"]=linkTag.text\
+                                    .replace("\t","")\
+                                    .replace("\n","")\
+                                    .replace(",","")\
+                                    .replace('"',"")\
+                                    .replace("\r","")[1:len(linkTag.text)+1]
                 # If there is no data,
-                # I assign "None" into into value of "Title" and "LinkSrc" key in dictionary "d"
-                except:
-                    d["LinkSrc"] = "None"
-                    d["Title"] = "None"
-
+                # assign "None" into value of "Title" key and "LinkSrc" key in "d"
+                except:    
+                    d["LinkSrc"]="None"
+                    d["Title"]="None"
+                    
                 try:
-                    # I find "dd" from "dl"
-                    contentTag = item2.find("dd")
-                    # I assign "\" into into value of "Content" key in dictionary "d"
-                    d["Content"] = \
-                    # I find text from "dd"
-                    # I remove "\t", "\n", ",", """, "\r"
-                    # And I split it by "…"
-                    # And I select [0] element
-                    contentTag.text.replace("\t", "").replace("\n", "").replace("\r", "").replace(",", "").replace('"',"").split("…")[0]
-                    # I find "span" with "class=writing" from "dd" and get only text
-                    # I assign text into into value of "Company" key in dictionary "d"
-                    d["Company"] = contentTag.find("span", {"class": "writing"}).text
-                    # I find "span" with "class=date" from "dd" and get only text
-                    # I assign text into into value of "Date" key in dictionary "d"
-                    d["Date"] = contentTag.find("span", {"class": "date"}).text
-                    # I print value of "Content" key in dictionary "d"
-                    print(d["Content"])
+                    # Find "dd" from "dl"
+                    contentTag=item2.find("dd")
+                    # Assign "\" into value of "Content" key in "d"
+                    # d["Content"]="\"
+                    # Find text from "dd"
+                    # Remove "\t", "\n", ",", """, "\r"
+                    # Split processed text by "…"
+                    # Select [0] element
+                    # d["Content"]=contentTag.text\
+                    d["Content"]=\
+                    contentTag.text\
+                            .replace("\t","")\
+                            .replace("\n","")\
+                            .replace("\r","")\
+                            .replace(",","")\
+                            .replace('"',"")\
+                            .split("…")[0]
+                    # Find "span" with "class=writing" from "dd" and get only text
+                    # Assign text into value of "Company" key in "d"                
+                    d["Company"]=contentTag.find("span",{"class":"writing"}).text
+                    # Find "span" with "class=date" from "dd" and get only text
+                    # I assign text into value of "Date" key in "d"
+                    d["Date"]=contentTag.find("span",{"class":"date"}).text
+                    # print(d["Content"])
+                # Print value of "Content" key in "d"
+                # print(d["Content"])
                 except:
-                    d["Content"] = "None"
-                    d["Company"] = "None"
-                    d["Date"] = "None"
-
+                    d["Content"]="None"
+                    d["Company"]="None"
+                    d["Date"]="None"
+                    
                 try:
-                    imgTag = item2.find("dt", {"class": "photo"}).find("img")
-                    d["imgSrc"] = imgTag["src"]
+                    imgTag=item2.find("dt",{"class":"photo"}).find("img")
+                    d["imgSrc"]=imgTag["src"]
                 except:
-                    d["imgSrc"] = "No image"
-                # I append dictionary "d" into list "l" per one for loop
+                    d["imgSrc"]="No image"
+                # Append "d" into "l" per one for loop    
                 l.append(d)
 
-    # I convert "l" into dataframe
-    df = pandas.DataFrame(l)
+    # Convert "l" into dataframe            
+    df=pandas.DataFrame(l)
+    # Save df into csv file
+    # Designate csv file name with format of '%s-%s-%s-%s-%s-%s.csv'
+    df.to_csv('%s-%s-%s-%s-%s-%s.csv'\
+             %(now.year,now.month,now.day,now.hour,now.minute,now.second)\
+             ,encoding='utf-8-sig'\
+             ,index=False)
+    print(df)
+    print("get datafile and save data successfully")
 
-    # I save df into csv file
-    # I designate csv file name format as '%s-%s-%s-%s-%s-%s.csv'
-    df.to_csv('%s-%s-%s-%s-%s-%s.csv' % (now.year, now.month, now.day, now.hour, now.minute, now.second), encoding='utf-8-sig', index=False)
-    print("Success Get DataFIle and Save Data")
-
-
+    
 def loadFile(fileName):
-    # The most first, this method invokes checkFileName()
+    # This method first invokes checkFileName()
     # to check if "fileName" file already exists or not
-    outputFileName = checkFileName(fileName)
-
-
+    outputFileName=checkFileName(fileName)
+    # -1 means no file
     if outputFileName is not -1:
-        df = pandas.read_csv(outputFileName)
-        content = df["Content"]
-        title = df["Title"]
-        company = df["Company"]
+        # Load csv file into dataframe
+        df=pandas.read_csv(outputFileName)
+        # Extract Content from dataframe
+        content=df["Content"]
+        # Extract Title from dataframe
+        title=df["Title"]
+        # Extract Company from dataframe
+        company=df["Company"]
         print(company)
-
-        print("csv FIle Load Success")
+        print("csv fIle loaded successfully")
     else:
-        print("Error csv File")
+        print("error during csv file load")
 
 
-# 사용자가 입력한 파일명이 존재하지 않을시 -1 리턴, 존재시 파일명 리턴
-# 사용자 입력값이 all이면 같은 경로의 모든 csv파일을 하나로 합치고, csv파일을 새로 만듦
+# 사용자 입력값이 all이면 같은 경로의 모든 csv파일을 하나로 합치고,csv파일을 새로 만듦
 # 그리고 만들어진 csv 파일을 리턴
 def checkFileName(fileName):
-    now = datetime.now()
+    now=datetime.now()
 
-    # If there is no file, it returns -1
-    if len(glob2.glob("*.csv")) == 0:
-        print("No file found in this diㅋㅋrectory")
+    # If there is no file,it returns -1
+    if len(glob2.glob("*.csv"))==0:
+        print("No file found in this directory")
         return -1
     else:
-        # If there is file,
-        # and if "filename" which user inputs is "all",
-        if fileName == "all":
-            result = []
-            # This brings all csv file
+        # If fileName which user input is all,
+        # merge all csv file located in same directory,
+        # create new csv file containing merge csv file
+        if fileName=="all":
+            result=[]
+            # Bring all csv files
             for i in glob2.glob("*.csv"):
-                # This read contents of csv file
-                # and this appends it into list "result"
+                # Read contents of csv file,
+                # and append all contents into "result"
                 result.append(pandas.read_csv(i))
-
-            # After appending into list "result"
-            # I designame file name
-            outputFileName = '%s-%s-%s-%s-%s-%s merging.csv' % (now.year, now.month, now.day, now.hour, now.minute, now.second)
-
-            # I concatenate all element in list "result"
-            # I assign concatenated one into "resultDf"
-            resultDf = pandas.concat(result, ignore_index=True)
-            # I create csv file 
-            resultDf.to_csv(outputFileName, encoding='utf-8-sig')
-            # I return name of csv file
+            # After appending all contents into "result",
+            # designate file name
+            outputFileName='%s-%s-%s-%s-%s-%s-merging.csv'\
+                        %(now.year,now.month,now.day,now.hour,now.minute,now.second)
+            # Concatenate all elements into "result"
+            # Assign concatenated one into "resultDf"
+            resultDf=pandas.concat(result,ignore_index=True)
+            # Create csv file 
+            resultDf.to_csv(outputFileName,encoding='utf-8-sig')
+            # Return name of csv file
             return outputFileName
         else:
             return fileName
 
-
 # This method takes input value from user
 # And then, this method invokes methods
 def mainSetting():
-    # This is infinite loop until user inputs "exit"
+    # Infinite loop until user inputs "exit"
     while (1):
-        # This showsing input window
-        kb = input("$ ")
-        # If user inputs "exit", while is terminated
-        if kb == "exit":
+        # Show input window
+        kb=input("input exit or crawling or loadAll or load : ")	
+        # If user inputs "exit", while loop is terminated
+        if kb=="exit":
             break
         # If user inputs "crawling",
-        elif kb == "crawling":
-            # this takes "news date"
-            date = input("Enter news date : ")
-            # this takes the number of page
-            page = input("Enter your pageCount : ")
-            # this invokes crawlingData() with passing "date" and "page"
+        elif kb=="crawling":
+            # Take "news date" from user
+            date=input("input news date(format:20170101) : ")
+            # Take "number of page" from user
+            page=input("input news page(format:4) : ")
+            # Invoke crawlingData() with passing "date" and "page",
             # to crawl data and to save collected data into csv file
-            crawlingData(date, page)
-        # If user inputs "loadAll",    
-        elif kb == "loadAll":
-            # this invokes loadFile() with passing "all"
+            crawlingData(date,page)
+            break	
+        # If user inputs "loadAll",
+        elif kb=="loadAll":
+            # invokes loadFile() with passing "all"
             loadFile("all")
-        # If user inputs "load",    
-        elif kb == "load":
-            # this takes csv file name
-            fileName = input("Enter your csv file name : ")
-            # this invokes loadFile() with passing "filename"
+            break
+        # If user inputs "load",
+        elif kb=="load":
+            # takes "csv file name" from user,
+            fileName=input("input your csv file name: ")
+            # invoke loadFile() with passing "filename"
             loadFile(fileName)
         # If user inputs other commands,
         else:
-            # this shows error message
-            print("command error")
-      </xmp>
+            # show error message
+            print("command is not defined")
+            break
+</xmp>
    </BODY>
 </HTML>
