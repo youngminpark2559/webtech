@@ -1,0 +1,96 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+   "http://www.w3.org/TR/html4/strict.dtd">
+<HTML>
+   <HEAD>
+      <TITLE>My first HTML document</TITLE>
+      <style rel="stylesheet" type="text/css">
+body {
+ font-size: 20px;
+ 
+ margin-top: 50px;
+    margin-bottom: 50px;
+    margin-right: 80px;
+    margin-left: 100px;
+    
+    padding-top: 50px;
+    padding-bottom: 50px;
+    padding-right: 80px;
+    padding-left: 80px;
+    
+    line-height:35px;
+}
+/* img {
+ width:900px;
+} */
+</style>
+      <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    "HTML-CSS" : {
+        availableFonts : ["STIX"],
+        preferredFont : "STIX",
+        webFont : "STIX-Web",
+        imageFont : null
+    }
+});
+</script>
+     <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js" type="text/javascript">    
+    MathJax.Hub.Config({
+        HTML: ["input/TeX","output/HTML-CSS"],
+        TeX: { extensions: ["AMSmath.js","AMSsymbols.js"], 
+               equationNumbers: { autoNumber: "AMS" } },
+        extensions: ["tex2jax.js"],
+        jax: ["input/TeX","output/HTML-CSS"],
+        tex2jax: { inlineMath: [ ['$$$','$$$'] ],
+                   displayMath: [ ['$$$$','$$$$'] ],
+                   processEscapes: true },
+        "HTML-CSS": { availableFonts: ["TeX"],
+                      linebreaks: { automatic: true } }
+    });
+</script>
+   </HEAD>
+   <BODY>
+<xmp>
+
+================================================================================
+# BeautifulSoup proceeds request in backend layer
+
+# Selenium proceeds request via actual chrome browser
+
+# It means, if you don't explicitly hide browser window, browser will show up to user
+
+================================================================================
+# You can access to web page via chrome browser
+
+# You can bring all tags via css selector or xpath selector
+
+# If tag has id=py, you can order selenium to click that tag
+
+================================================================================
+# Using beautifulsoup and selenium together is much beneficial
+
+================================================================================
+from selenium import webdriver
+import time
+
+browser=webdriver.Chrome("/home/young/chromedriverfolder/chromedriver")	
+browser.get("http://python.org")
+
+# id=top, from all childs, tag ul, class menu, from all childs, li
+menus=browser.find_elements_by_css_selector("#top ul.menu li")
+
+================================================================================
+pypi=None
+
+for m in menus:
+  if m.text=="PyPI":	
+    pypi=m
+  print(m.text)
+
+pypi.cli
+ck()
+time.sleep(5)
+browser.quit()
+
+</xmp>
+   </BODY>
+</HTML>
