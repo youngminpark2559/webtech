@@ -1,0 +1,184 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+   "http://www.w3.org/TR/html4/strict.dtd">
+<HTML>
+   <HEAD>
+      <TITLE>My first HTML document</TITLE>
+      <style rel="stylesheet" type="text/css">
+body {
+ font-size: 20px;
+ 
+ margin-top: 50px;
+    margin-bottom: 50px;
+    margin-right: 80px;
+    margin-left: 100px;
+    
+    padding-top: 50px;
+    padding-bottom: 50px;
+    padding-right: 80px;
+    padding-left: 80px;
+    
+    line-height:35px;
+}
+/* img {
+ width:900px;
+} */
+</style>
+      <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    "HTML-CSS" : {
+        availableFonts : ["STIX"],
+        preferredFont : "STIX",
+        webFont : "STIX-Web",
+        imageFont : null
+    }
+});
+</script>
+     <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js" type="text/javascript">    
+    MathJax.Hub.Config({
+        HTML: ["input/TeX","output/HTML-CSS"],
+        TeX: { extensions: ["AMSmath.js","AMSsymbols.js"], 
+               equationNumbers: { autoNumber: "AMS" } },
+        extensions: ["tex2jax.js"],
+        jax: ["input/TeX","output/HTML-CSS"],
+        tex2jax: { inlineMath: [ ['$$$','$$$'] ],
+                   displayMath: [ ['$$$$','$$$$'] ],
+                   processEscapes: true },
+        "HTML-CSS": { availableFonts: ["TeX"],
+                      linebreaks: { automatic: true } }
+    });
+</script>
+   </HEAD>
+   <BODY>
+<xmp>
+
+https://www.youtube.com/watch?v=IkZiDDFfJ88&list=PLaRYNlxIGoESkuvIdRJNLjdUC4lpF3fM7&index=3
+
+================================================================================
+# Data which you want to crawl
+/home/young/Pictures/2019_05_20_12:42:02.png
+
+# All article's top tag: ul class=type06_headline
+# one article tag for one article: li, dl
+# photo tag: dt class="photo"
+# title tag: dt
+# article contents tag: dd
+
+================================================================================
+import requests
+from bs4 import BeautifulSoup
+
+r=requests.get("http://news.naver.com/main/list.nhn?mode=LSD&mid=sec&sid1=100")
+c=r.content
+soup=BeautifulSoup(c,"html.parser")
+
+================================================================================
+# Find one "ul" tag, class name is type06_headline
+all=soup.find("ul",{"class":"type06_headline"})
+
+================================================================================
+# Find all li tags, and store them into all2
+all2=all.find_all("li")
+# print(all2)
+# ["a","b","c",...]
+
+================================================================================
+/home/young/Pictures/2019_05_20_12:50:03.png
+
+================================================================================
+for item in all2:
+  # Find dt tag, class name is empty to get title
+  title_HTML=item.find("dt",{"class":""})
+  title=title_HTML.text.replace("\t","").replace("\n","")
+  
+  # Remove front 2 whitespaces
+  modifiedTitle=title[2:len(title)+1]
+  print(modifiedTitle)
+
+================================================================================
+/home/young/Pictures/2019_05_20_12:54:59.png
+
+# getImageSrc() gets image_address
+
+# <dt class="photo">
+#   <a href="hyper_link">
+#     <img src="image_address"/>
+#   </a>
+# </dt>
+
+================================================================================
+def getImageSrc():
+
+  # Find all tags of dl
+  dl=all.find_all("dl")
+
+  ================================================================================
+  for item2 in dl:
+
+    try:
+      # You find dt tag, class name is photo
+      dt_photo=item2.find("dt",{"class":"photo"})
+      
+      # And then, on the found result, you find img tag
+      img=dt_photo.find("img")
+
+      # Get value of src attribute
+      print(img['src'])
+
+    # There can be articles without images
+    except:
+      print("No image")
+
+================================================================================
+# This method finds title and address of article
+def getLinkAndTitle():
+  
+  # Find all tags of dl
+  dl=all.find_all("dl")
+
+  ================================================================================
+  for item2 in dl:
+    # On dl, find dt with class=""
+    # On result, find a elements
+
+    # On dl, find one tag of dt, class name is empty
+    dt_tags=item2.find("dt",{"class":""})
+
+    link=dt_tags.find("a")
+
+    # Get value of href attribute
+    print(link['href'])
+
+    processed_link=link.text.replace("\t","").replace("\n","")[1:len(link.text)+1]
+    print(processed_link)
+
+================================================================================
+# This finds contents of article
+def getContent():
+
+  # Find all tags of dl
+  dl=all.find_all("dl")
+
+  ================================================================================
+  for item2 in dl:
+    try:
+      # On each dl, find one tag of dd
+      content=item2.find("dd")
+
+      processed_content=content.text.replace("\t","").replace("\n","").split("...")[0]
+
+      # Find one tag of span, class name is writing
+      span_writing=processed_content.find("span",{"class":"writing"})
+
+      # Get only text data
+      span_writing_txt=span_writing.text
+      print(span_writing_txt)
+
+      span_date=processed_content.find("span",{"class":"date"})
+      span_date_txt=span_date.text
+
+      except:
+      print("No Content")
+
+</xmp>
+   </BODY>
+</HTML>
