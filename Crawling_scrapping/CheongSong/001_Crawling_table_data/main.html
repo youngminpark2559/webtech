@@ -1,0 +1,130 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+   "http://www.w3.org/TR/html4/strict.dtd">
+<HTML>
+   <HEAD>
+      <TITLE>My first HTML document</TITLE>
+      <style rel="stylesheet" type="text/css">
+body {
+ font-size: 20px;
+ 
+ margin-top: 50px;
+    margin-bottom: 50px;
+    margin-right: 80px;
+    margin-left: 100px;
+    
+    padding-top: 50px;
+    padding-bottom: 50px;
+    padding-right: 80px;
+    padding-left: 80px;
+    
+    line-height:35px;
+}
+/* img {
+ width:900px;
+} */
+</style>
+      <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    "HTML-CSS" : {
+        availableFonts : ["STIX"],
+        preferredFont : "STIX",
+        webFont : "STIX-Web",
+        imageFont : null
+    }
+});
+</script>
+     <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js" type="text/javascript">    
+    MathJax.Hub.Config({
+        HTML: ["input/TeX","output/HTML-CSS"],
+        TeX: { extensions: ["AMSmath.js","AMSsymbols.js"], 
+               equationNumbers: { autoNumber: "AMS" } },
+        extensions: ["tex2jax.js"],
+        jax: ["input/TeX","output/HTML-CSS"],
+        tex2jax: { inlineMath: [ ['$$$','$$$'] ],
+                   displayMath: [ ['$$$$','$$$$'] ],
+                   processEscapes: true },
+        "HTML-CSS": { availableFonts: ["TeX"],
+                      linebreaks: { automatic: true } }
+    });
+</script>
+   </HEAD>
+   <BODY>
+<xmp>
+
+https://www.youtube.com/watch?v=QLf-pDoJvjQ&list=PLaRYNlxIGoESkuvIdRJNLjdUC4lpF3fM7&index=3&t=0s
+
+================================================================================
+Crawling table data
+
+================================================================================
+import requests
+from bs4 import BeautifulSoup
+
+# Get HTML data from page
+r=requests.get("http://lambutan.dothome.co.kr/")
+
+# Bring its contents
+c=r.content
+
+# Paser HTML text to HTML format text
+soup=BeautifulSoup(c,"html.parser")
+
+================================================================================
+# Table structure in HTML
+# tbody
+#   tr
+#     td
+#     td
+#   tr
+#   tr
+#     td
+#     td
+#   tr
+# tbody
+
+================================================================================
+# Use find() when you search HTML by "one tag"
+# or when you want to get one item from "one tage"
+# If there are multiples tags, find() return content of first tag
+# all=soup.find('tbody')
+
+# Get all contents inside of tbody
+/home/young/Pictures/2019_05_20_12:16:29.png
+
+# Get one td from multiple td
+# all=soup.find('td')
+/home/young/Pictures/2019_05_20_12:15:45.png
+
+================================================================================
+all=soup.find("tbody")
+
+================================================================================
+# After finding "tbody", you need to find "tr"
+
+# You can use soup.find_all()
+# It stores tags into list
+# [all[0],all[1],...]
+
+================================================================================
+/home/young/Pictures/2019_05_20_12:21:28.png
+all2=all.find_all("tr",{"class":""})
+# all2
+# [<tr class="">a</tr>,<tr class="">b</tr>,<tr class="">c</tr>]
+
+================================================================================
+# Find td
+
+for item in all2:
+  # Find td tage, class name is professor
+  professor=item.find("td",{"class":"professor"}).text
+  lectureName=item.find("td",{"class":"lecture"}).text
+  orther=item.find("td",{"class":"orther"}).text
+  grade = item.find("td",{"class": "grade"}).text
+  evaluation=item.find("td",{"class": "evaluation"}).text
+  
+  print(professor+"/"+lectureName+"/"+orther+"/"+grade+"/"+evaluation)
+  # Kim/Python/None/1/1
+
+</xmp>
+   </BODY>
+</HTML>
