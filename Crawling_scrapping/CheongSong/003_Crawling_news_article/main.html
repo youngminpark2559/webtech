@@ -1,0 +1,273 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+   "http://www.w3.org/TR/html4/strict.dtd">
+<HTML>
+   <HEAD>
+      <TITLE>My first HTML document</TITLE>
+      <style rel="stylesheet" type="text/css">
+body {
+ font-size: 20px;
+ 
+ margin-top: 50px;
+    margin-bottom: 50px;
+    margin-right: 80px;
+    margin-left: 100px;
+    
+    padding-top: 50px;
+    padding-bottom: 50px;
+    padding-right: 80px;
+    padding-left: 80px;
+    
+    line-height:35px;
+}
+/* img {
+ width:900px;
+} */
+</style>
+      <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    "HTML-CSS" : {
+        availableFonts : ["STIX"],
+        preferredFont : "STIX",
+        webFont : "STIX-Web",
+        imageFont : null
+    }
+});
+</script>
+     <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js" type="text/javascript">    
+    MathJax.Hub.Config({
+        HTML: ["input/TeX","output/HTML-CSS"],
+        TeX: { extensions: ["AMSmath.js","AMSsymbols.js"], 
+               equationNumbers: { autoNumber: "AMS" } },
+        extensions: ["tex2jax.js"],
+        jax: ["input/TeX","output/HTML-CSS"],
+        tex2jax: { inlineMath: [ ['$$$','$$$'] ],
+                   displayMath: [ ['$$$$','$$$$'] ],
+                   processEscapes: true },
+        "HTML-CSS": { availableFonts: ["TeX"],
+                      linebreaks: { automatic: true } }
+    });
+</script>
+   </HEAD>
+   <BODY>
+<xmp>
+
+https://www.youtube.com/watch?v=VXAUZag1kIU&list=PLaRYNlxIGoESkuvIdRJNLjdUC4lpF3fM7&index=6
+
+================================================================================
+# @
+# Install libraries
+# pip3 install pandas
+# pip3 install glob2
+
+# @
+import requests,operator,pandas,glob2
+from bs4 import BeautifulSoup
+from datetime import datetime
+
+# This method crawls based on "date" and "pageCount"
+def crawlingData(date,pageCount):
+  # You store current time into "now"
+  now=datetime.now()
+
+  ================================================================================
+  # Placeholder
+  l=[]
+
+  # If user inputs 4 as pageCount, total pages will be from 1 to 4
+  for pagecount in range(1,int(pageCount)):
+
+    r=requests.get("http://news.naver.com/main/list.nhn?mode=LSD&mid=sec&sid1=100&date="+str(date)+"&page="+str(pageCount))
+    c=r.content
+    soup=BeautifulSoup(c,"html.parser")
+
+    ================================================================================
+    # Find all tags of li
+    all=soup.find_all("li")
+
+    for item in all:
+
+      # Find all tags of dl
+      for item2 in item.find_all("dl"):
+
+        d={}
+
+        try:
+          # Find one tag of dt, class name is ""
+          dt_empty_class=item2.find("dt",{"class":""})
+          
+          # Find one tag of a
+          linkTag=dt_empty_class.find("a")
+
+          ================================================================================
+          # Get value from attribute href
+          d["LinkSrc"]=linkTag["href"]
+
+          ================================================================================
+          # Get text data from linkTag
+          d["Title"]=linkTag.text.\
+                     replace("\t","").\
+                     replace("\n","").\
+                     replace(",","").\
+                     replace('"',"").\
+                     replace("\r","")[1:len(linkTag.text)+1]
+
+        ================================================================================
+        # If there is no data with exception, assign "None" into value
+        except:    
+          d["LinkSrc"]="None"
+          d["Title"]="None"
+        
+        ================================================================================
+        try:
+          # Find one tag of dd
+          contentTag=item2.find("dd")
+          
+          d["Content"]=contentTag.text.\
+                       replace("\t","").\
+                       replace("\n","").\
+                       replace("\r","").\
+                       replace(",","").\
+                       replace('"',"").\
+                       split("…")[0]
+          
+          ================================================================================
+          d["Company"]=contentTag.find("span",{"class":"writing"}).text
+          d["Date"]=contentTag.find("span",{"class":"date"}).text
+        
+        except:
+          d["Content"]="None"
+          d["Company"]="None"
+          d["Date"]="None"
+            
+        try:
+          imgTag=item2.find("dt",{"class":"photo"}).find("img")
+          d["imgSrc"]=imgTag["src"]
+        except:
+          d["imgSrc"]="No image"
+
+        # Append "d" into "l" per one for loop    
+        l.append(d)
+
+  ================================================================================
+  df=pandas.DataFrame(l)
+
+  df.to_csv('%s-%s-%s-%s-%s-%s.csv'%(now.year,now.month,now.day,now.hour,now.minute,now.second),
+            encoding='utf-8-sig',index=False)
+
+  print("get datafile and save data successfully")
+
+================================================================================
+def loadFile(fileName):
+  # This method first invokes checkFileName()
+  # to check if "fileName" file already exists or not
+  outputFileName=checkFileName(fileName)
+  
+  # -1 means no file
+  if outputFileName is not -1:
+    # Load csv file into dataframe
+    df=pandas.read_csv(outputFileName)
+  
+    # Extract Content from dataframe
+    content=df["Content"]
+  
+    # Extract Title from dataframe
+    title=df["Title"]
+  
+    # Extract Company from dataframe
+    company=df["Company"]
+  
+    print(company)
+    print("csv fIle loaded successfully")
+  else:
+    print("error during csv file load")
+
+================================================================================
+# 사용자 입력값이 all이면 같은 경로의 모든 csv파일을 하나로 합치고,csv파일을 새로 만듦
+# 그리고 만들어진 csv 파일을 리턴
+def checkFileName(fileName):
+  now=datetime.now()
+
+  # If there is no file,it returns -1
+  if len(glob2.glob("*.csv"))==0:
+    print("No file found in this directory")
+    return -1
+
+  else:
+    # If fileName which user input is all,
+    # merge all csv file located in same directory,
+    # create new csv file containing merge csv file
+    if fileName=="all":
+      result=[]
+
+      # Bring all csv files
+      for i in glob2.glob("*.csv"):
+        # Read contents of csv file,
+        # and append all contents into "result"
+        result.append(pandas.read_csv(i))
+
+      # After appending all contents into "result",
+      # designate file name
+      outputFileName='%s-%s-%s-%s-%s-%s-merging.csv'\
+                  %(now.year,now.month,now.day,now.hour,now.minute,now.second)
+
+      # Concatenate all elements into "result"
+      # Assign concatenated one into "resultDf"
+      resultDf=pandas.concat(result,ignore_index=True)
+
+      # Create csv file 
+      resultDf.to_csv(outputFileName,encoding='utf-8-sig')
+  
+      # Return name of csv file
+      return outputFileName
+    else:
+      return fileName
+
+================================================================================
+def mainSetting():
+  # Infinite loop until user inputs "exit"
+  while (1):
+
+    # Show input window
+    kb=input("input exit or crawling or loadAll or load : ")	
+  
+    # If user inputs "exit", while loop is terminated
+    if kb=="exit":
+      break
+  
+    # If user inputs "crawling",
+    elif kb=="crawling":
+      # Take "news date" from user
+      date=input("input news date(format:20170101) : ")
+
+      # Take "number of page" from user
+      page=input("input news page(format:4) : ")
+
+      # Invoke crawlingData() with passing "date" and "page",
+      crawlingData(date,page)
+      break	
+
+    ================================================================================
+    # If user inputs "loadAll",
+    elif kb=="loadAll":
+      # invokes loadFile() with passing "all"
+      loadFile("all")
+      break
+
+    ================================================================================
+    # If user inputs "load",
+    elif kb=="load":
+      # Takes "csv file name" from user,
+      fileName=input("input your csv file name: ")
+
+      # invoke loadFile() with passing "filename"
+      loadFile(fileName)
+
+    ================================================================================
+    # If user inputs other commands,
+    else:
+      print("command is not defined")
+      break
+
+</xmp>
+   </BODY>
+</HTML>
