@@ -1,0 +1,109 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+   "http://www.w3.org/TR/html4/strict.dtd">
+<HTML>
+   <HEAD>
+      <TITLE>My first HTML document</TITLE>
+      <style rel="stylesheet" type="text/css">
+body {
+ font-size: 20px;
+ 
+ margin-top: 50px;
+    margin-bottom: 50px;
+    margin-right: 80px;
+    margin-left: 100px;
+    
+    padding-top: 50px;
+    padding-bottom: 50px;
+    padding-right: 80px;
+    padding-left: 80px;
+    
+    line-height:35px;
+}
+img {
+ width:900px;
+}
+</style>
+      <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    "HTML-CSS" : {
+        availableFonts : ["STIX"],
+        preferredFont : "STIX",
+        webFont : "STIX-Web",
+        imageFont : null
+    }
+});
+</script>
+     <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js" type="text/javascript">    
+    MathJax.Hub.Config({
+        HTML: ["input/TeX","output/HTML-CSS"],
+        TeX: { extensions: ["AMSmath.js","AMSsymbols.js"], 
+               equationNumbers: { autoNumber: "AMS" } },
+        extensions: ["tex2jax.js"],
+        jax: ["input/TeX","output/HTML-CSS"],
+        tex2jax: { inlineMath: [ ['$$$','$$$'] ],
+                   displayMath: [ ['$$$$','$$$$'] ],
+                   processEscapes: true },
+        "HTML-CSS": { availableFonts: ["TeX"],
+                      linebreaks: { automatic: true } }
+    });
+</script>
+   </HEAD>
+   <BODY>
+<xmp>
+
+https://www.youtube.com/watch?v=k4M_dO35JFU&t=326s
+
+================================================================================
+F12: dev tool
+
+Network tab: capture stream from IO
+
+================================================================================
+/home/young/Pictures/2019_05_21_07:48:48.png
+
+Request URL: URL which you request to
+Request Methods: GET
+
+Query String parameters: attatched variables with request
+
+================================================================================
+/home/young/Pictures/2019_05_21_07:52:55.png
+
+Setting URL and Query String
+
+r=requests.get(gen_req_url,query_str_params)
+
+================================================================================
+/home/young/Pictures/2019_05_21_07:57:02.png
+
+request.post()
+
+================================================================================
+df=pd.read_excel(BytesIO(r.content))
+
+df["deal_date"]=20190101
+
+file_dir="/home/young"
+
+file_name="/xxx.xlsx"
+
+df.to_excel(file_dir+file_name,index=False,index_label=None)
+
+================================================================================
+request: url+querystring+header
+
+gen_req_url='http://file.krx.co.kr/download.jspx'
+
+headers={
+  'Referer':'http://marketdata.krx.co.kr/mdi'
+}
+
+form_data={
+  'code':r.content
+}
+
+r=requests.post(gen_req_url,form_data,headers=headers)
+
+</xmp>
+   </BODY>
+</HTML>
