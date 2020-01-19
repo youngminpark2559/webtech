@@ -1,0 +1,165 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+   "http://www.w3.org/TR/html4/strict.dtd">
+<HTML>
+   <HEAD>
+      <TITLE>My first HTML document</TITLE>
+      <style rel="stylesheet" type="text/css">
+body {
+ font-size: 20px;
+ 
+ margin-top: 50px;
+    margin-bottom: 50px;
+    margin-right: 80px; 
+    margin-left: 100px;
+    
+    padding-top: 50px;
+    padding-bottom: 50px;
+    padding-right: 80px;
+    padding-left: 80px;
+    
+    line-height:35px;
+}
+/* img {
+ width:900px;
+} */
+</style>
+      <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    "HTML-CSS" : {
+        availableFonts : ["STIX"],
+        preferredFont : "STIX",
+        webFont : "STIX-Web",
+        imageFont : null
+    }
+});
+</script>
+     <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js" type="text/javascript">    
+    MathJax.Hub.Config({
+        HTML: ["input/TeX","output/HTML-CSS"],
+        TeX: { extensions: ["AMSmath.js","AMSsymbols.js"], 
+               equationNumbers: { autoNumber: "AMS" } },
+        extensions: ["tex2jax.js"],
+        jax: ["input/TeX","output/HTML-CSS"],
+        tex2jax: { inlineMath: [ ['$$$','$$$'] ],
+                   displayMath: [ ['$$$$','$$$$'] ],
+                   processEscapes: true },
+        "HTML-CSS": { availableFonts: ["TeX"],
+                      linebreaks: { automatic: true } }
+    });
+</script>
+   </HEAD>
+   <BODY>
+<xmp>
+This is personal study note
+Copyright and original reference are from:
+https://www.youtube.com/watch?v=hQaQp1gEcjc
+[토크ON세미나] 스프링 부트를 이용한 웹 서비스 개발 5강 - 스프링부트를 이용한 웹서비스 만들기 | T아카데미
+
+================================================================================
+https://github.com/ihoneymon/tacademy-spring-boot
+
+================================================================================
+</xmp><img src='./pics/2020_01_19_10:30:14.png' alt=''><xmp>
+
+================================================================================
+</xmp><img src='./pics/2020_01_19_10:33:34.png' alt=''><xmp>
+
+================================================================================
+</xmp><img src='./pics/2020_01_19_10:34:40.png' alt=''><xmp>
+
+================================================================================
+</xmp><img src='./pics/2020_01_19_11:54:13.png' alt=''><xmp>
+
+- 기획자가 작성한 기획서 (비즈니스 로직)
+- 데이터베이스 모델링
+
+================================================================================
+</xmp><img src='./pics/2020_01_19_11:55:23.png' alt=''><xmp>
+
+- 짧은 스프린트 기간
+- 짧게 돌면서 개발
+- 잦은 출시 지향
+
+- 요구사항/변경사항이 많이 제시될때, 잦은 출시로 피드백을 받는다
+
+================================================================================
+</xmp><img src='./pics/2020_01_19_11:58:19.png' alt=''><xmp>
+
+================================================================================
+</xmp><img src='./pics/2020_01_19_12:04:15.png' alt=''><xmp>
+
+================================================================================
+</xmp><img src='./pics/2020_01_19_12:05:34.png' alt=''><xmp>
+
+================================================================================
+</xmp><img src='./pics/2020_01_19_12:12:10.png' alt=''><xmp>
+
+================================================================================
+</xmp><img src='./pics/2020_01_19_12:12:50.png' alt=''><xmp>
+
+================================================================================
+</xmp><img src='./pics/2020_01_19_12:13:36.png' alt=''><xmp>
+
+================================================================================
+</xmp><img src='./pics/2020_01_19_12:14:18.png' alt=''><xmp>
+
+================================================================================
+</xmp><img src='./pics/2020_01_19_12:14:35.png' alt=''><xmp>
+
+================================================================================
+</xmp><img src='./pics/2020_01_19_12:14:59.png' alt=''><xmp>
+
+================================================================================
+</xmp><img src='./pics/2020_01_19_12:15:50.png' alt=''><xmp>
+
+- 젠킨스가 빌드함
+- 배포본 생성됨
+
+================================================================================
+</xmp><img src='./pics/2020_01_19_12:19:10.png' alt=''><xmp>
+
+- admin: 백오피스
+- 책등록 등
+
+================================================================================
+</xmp><img src='./pics/2020_01_19_12:20:08.png' alt=''><xmp>
+
+================================================================================
+</xmp><img src='./pics/2020_01_19_12:21:29.png' alt=''><xmp>
+
+================================================================================
+</xmp><img src='./pics/2020_01_19_12:28:17.png' alt=''><xmp>
+
+Continuous Integration
+Continuous Delivery / Continuous Deployment
+
+</xmp><img src='./pics/2020_01_19_12:29:10.png' alt=''><xmp>
+- Jenkins
+
+================================================================================
+</xmp><img src='./pics/2020_01_19_12:29:48.png' alt=''><xmp>
+
+</xmp><img src='./pics/2020_01_19_12:30:44.png' alt=''><xmp>
+
+</xmp><img src='./pics/2020_01_19_12:31:02.png' alt=''><xmp>
+
+</xmp><img src='./pics/2020_01_19_12:31:34.png' alt=''><xmp>
+Github-Jenkins 연동 체크
+
+================================================================================
+</xmp><img src='./pics/2020_01_19_12:37:11.png' alt=''><xmp>
+
+- #Build
+  - 그래들 빌드
+
+- #Change file name
+  - 빌드가 일어난 jar 파일의 이름을 프로젝트 이름으로 변경
+
+================================================================================
+</xmp><img src='./pics/2020_01_19_12:46:09.png' alt=''><xmp>
+
+- 이전 배포본으로 돌아가기
+
+</xmp>
+   </BODY>
+</HTML>
