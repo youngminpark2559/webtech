@@ -1,0 +1,223 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+   "http://www.w3.org/TR/html4/strict.dtd">
+<HTML>
+   <HEAD>
+      <TITLE>My first HTML document</TITLE>
+      <style rel="stylesheet" type="text/css">
+body {
+ font-size: 20px;
+ 
+ margin-top: 50px;
+    margin-bottom: 50px;
+    margin-right: 80px; 
+    margin-left: 100px;
+    
+    padding-top: 50px;
+    padding-bottom: 50px;
+    padding-right: 80px;
+    padding-left: 80px;
+    
+    line-height:35px;
+}
+/* img {
+ width:900px;
+} */
+</style>
+      <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    "HTML-CSS" : {
+        availableFonts : ["STIX"],
+        preferredFont : "STIX",
+        webFont : "STIX-Web",
+        imageFont : null
+    }
+});
+</script>
+     <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js" type="text/javascript">    
+    MathJax.Hub.Config({
+        HTML: ["input/TeX","output/HTML-CSS"],
+        TeX: { extensions: ["AMSmath.js","AMSsymbols.js"], 
+               equationNumbers: { autoNumber: "AMS" } },
+        extensions: ["tex2jax.js"],
+        jax: ["input/TeX","output/HTML-CSS"],
+        tex2jax: { inlineMath: [ ['$$$','$$$'] ],
+                   displayMath: [ ['$$$$','$$$$'] ],
+                   processEscapes: true },
+        "HTML-CSS": { availableFonts: ["TeX"],
+                      linebreaks: { automatic: true } }
+    });
+</script>
+   </HEAD>
+   <BODY>
+<xmp>
+This is personal study note
+Copyright and original reference are from:
+https://www.youtube.com/watch?v=62Dh9AWAp58
+[토크ON세미나] 스프링 부트를 이용한 웹 서비스 개발 4강 - 스프링부트 만들기 III | T아카데미
+
+================================================================================
+</xmp><img src='./pics/2020_01_19_08:16:36.png' alt=''><xmp>
+
+- 서비스계층 코드
+- @Service
+- @Transactional: Service 안의 메서드가 호출될 때, 트랜잭션 관리를 하겠다
+
+public BookServiceImpl(BookRepository repository) {
+   this.repository=repository;
+}
+- 생성자주입방식으로 BookRepository 인스턴스를 주입받음
+
+- findById 와 findAll 메서드를 override 함
+
+================================================================================
+</xmp><img src='./pics/2020_01_19_08:21:13.png' alt=''><xmp>
+
+- 트랜잭션: 행위시작 - 종료될 때 까지, 
+- 정상일경우 완료처리
+- 예외가 생길경우, 데이터를 롤백함
+
+- 카테고리엔티티를 만들면, 북엔티티/카테고리엔티티 가 서로 상호작용하는 영역이 서비스계층임
+
+================================================================================
+</xmp><img src='./pics/2020_01_19_08:23:15.png' alt=''><xmp>
+
+</xmp><img src='./pics/2020_01_19_08:23:48.png' alt=''><xmp>
+
+</xmp><img src='./pics/2020_01_19_08:24:34.png' alt=''><xmp>
+
+</xmp><img src='./pics/2020_01_19_08:24:56.png' alt=''><xmp>
+
+================================================================================
+</xmp><img src='./pics/2020_01_19_08:26:31.png' alt=''><xmp>
+
+- BookService 에서 findById 라고 하는 BookRepository 의 메서드를 호출하는 메서드를 만들것임
+
+- 의견이 분분한 내용
+  - 인터페이스를 작성하고, 인터페이스의 구현체를 작성하여 사용방식
+  - BookService 를 클래스로 작성해서 바로 사용
+
+  - 일반적으로는, 인터페이스에 메서드 정의함
+  - 그리고 인터페이스를 구현한 클래스를 하나 더 작성
+
+================================================================================
+</xmp><img src='./pics/2020_01_19_08:33:14.png' alt=''><xmp>
+
+================================================================================
+</xmp><img src='./pics/2020_01_19_08:33:55.png' alt=''><xmp>
+
+================================================================================
+</xmp><img src='./pics/2020_01_19_08:35:11.png' alt=''><xmp>
+
+- 생성자를 통해 BookRepository 인스턴스를 주입받는 코드 작성
+- BookRepository 인스턴스를 주입받고 BookServiceImpl 클래스의 필드에 넣는다
+public BookServiceImpl(BookRepository bookRepository){
+   this.bookRepository=bookRepository;
+}
+
+================================================================================
+</xmp><img src='./pics/2020_01_19_08:37:33.png' alt=''><xmp>
+
+- 주입받은 BookRepository 인스턴스에서 findById(id) 를 호출해서 결과를 반환함
+@Override
+public Optional<Book> findById(Long id){
+   return bookRepository.findById(id);
+}
+
+================================================================================
+</xmp><img src='./pics/2020_01_19_08:46:23.png' alt=''><xmp>
+
+- 테스트 코드 작성 
+- 패키지 만들기
+
+</xmp><img src='./pics/2020_01_19_08:46:54.png' alt=''><xmp>
+- 서비스 패키지 만들기
+
+</xmp><img src='./pics/2020_01_19_08:47:40.png' alt=''><xmp>
+- 패키지 안에 클래스 만들기
+
+================================================================================
+</xmp><img src='./pics/2020_01_19_08:48:45.png' alt=''><xmp>
+
+- @RunWith(SpringRunner.class)
+  - @RunWith: 테스트가 실행되는 환경 지정
+  - SpringRunner.class: 스프링프레임워크와 함께 테스트를 실행할 것임
+
+- @SpringBooTest()
+  - 서비스계층은 Web Application Context 까지 띄울 필요가 없음
+  - 따라서, webEnvironment=WebEnvironment.NONE
+
+================================================================================
+</xmp><img src='./pics/2020_01_19_09:05:54.png' alt=''><xmp>
+
+- "자동주입" 을 기반으로 서비스를 테스트하는 방법
+
+- BooService 인스턴스를 주입받음
+@Autowired
+BookService bookService;
+
+- orElseThrow:
+  - id 값을 찾지 못하면 예외를 던짐
+
+================================================================================
+https://youtu.be/62Dh9AWAp58?t=1037
+
+- "BookServiceImpl" 을 직접 사용하는 방식을 기반으로 서비스를 테스트하는 방법
+
+================================================================================
+</xmp><img src='./pics/2020_01_19_09:14:07.png' alt=''><xmp>
+
+- 컨트롤러는 @RestController 또는 @Controller 가짐
+
+================================================================================
+</xmp><img src='./pics/2020_01_19_09:15:48.png' alt=''><xmp>
+
+================================================================================
+</xmp><img src='./pics/2020_01_19_09:16:29.png' alt=''><xmp>
+
+1: 외부에서 요청이 생김, DispatcherServlet 이 요청을 받음
+2: 등록된 HanderMapping 중에서, 해당 요청에 대해 처리될 게 있나 확인
+3: 확인 결과 반환
+4: 결과에 따라 HadlerAdapter 동작
+5: 상응하는 Controller 호출
+6: JSON 요청했는지, HttpMessage 요청했는지에 따라서 Data converter 를 이용해서 데이터 반환
+7: 
+
+================================================================================
+</xmp><img src='./pics/2020_01_19_09:19:45.png' alt=''><xmp>
+
+================================================================================
+Book controller 만들기
+
+</xmp><img src='./pics/2020_01_19_09:21:26.png' alt=''><xmp>
+- api 패키지만들기
+
+================================================================================
+</xmp><img src='./pics/2020_01_19_09:22:17.png' alt=''><xmp>
+
+- BookController 클래스 만들기
+
+================================================================================
+</xmp><img src='./pics/2020_01_19_09:31:35.png' alt=''><xmp>
+
+/books/123
+요청 들어올때, 서비스에서 조회함
+
+================================================================================
+</xmp><img src='./pics/2020_01_19_09:40:04.png' alt=''><xmp>
+
+- 프로젝트를 만듦
+- 메인 스프링부트 어플리케이션 옆에,
+- Rest 컨트롤러를 붙임
+
+================================================================================
+</xmp><img src='./pics/2020_01_19_09:41:37.png' alt=''><xmp>
+
+================================================================================
+</xmp><img src='./pics/2020_01_19_09:47:19.png' alt=''><xmp>
+
+================================================================================
+</xmp><img src='./pics/2020_01_19_09:50:07.png' alt=''><xmp>
+
+</xmp>
+   </BODY>
+</HTML>
