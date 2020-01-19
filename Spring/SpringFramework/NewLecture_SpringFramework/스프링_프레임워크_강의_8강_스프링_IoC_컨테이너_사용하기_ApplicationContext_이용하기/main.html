@@ -1,0 +1,134 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+   "http://www.w3.org/TR/html4/strict.dtd">
+<HTML>
+   <HEAD>
+      <TITLE>My first HTML document</TITLE>
+      <style rel="stylesheet" type="text/css">
+body {
+ font-size: 20px;
+ 
+ margin-top: 50px;
+    margin-bottom: 50px;
+    margin-right: 80px;
+    margin-left: 100px;
+    
+    padding-top: 50px;
+    padding-bottom: 50px;
+    padding-right: 80px;
+    padding-left: 80px;
+    
+    line-height:35px;
+}
+/* img {
+ width:900px;
+} */
+</style>
+      <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    "HTML-CSS" : {
+        availableFonts : ["STIX"],
+        preferredFont : "STIX",
+        webFont : "STIX-Web",
+        imageFont : null
+    }
+});
+</script>
+     <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js" type="text/javascript">    
+    MathJax.Hub.Config({
+        HTML: ["input/TeX","output/HTML-CSS"],
+        TeX: { extensions: ["AMSmath.js","AMSsymbols.js"], 
+               equationNumbers: { autoNumber: "AMS" } },
+        extensions: ["tex2jax.js"],
+        jax: ["input/TeX","output/HTML-CSS"],
+        tex2jax: { inlineMath: [ ['$$$','$$$'] ],
+                   displayMath: [ ['$$$$','$$$$'] ],
+                   processEscapes: true },
+        "HTML-CSS": { availableFonts: ["TeX"],
+                      linebreaks: { automatic: true } }
+    });
+</script>
+   </HEAD>
+   <BODY>
+<xmp>
+This is personal study note
+Copyright and original reference are from:
+https://www.youtube.com/watch?v=R_6fW1tVj8Y
+스프링 프레임워크 강의 8강 - 스프링 IoC 컨테이너 사용하기(ApplicationContext 이용하기)
+스프링_프레임워크_강의_8강_스프링_IoC_컨테이너_사용하기_ApplicationContext_이용하기
+
+================================================================================
+- 스프링이 지시서의 내용을 읽음
+- 내용대로 객체를 만들고 활용함
+
+================================================================================
+</xmp><img src='./pics/2020_01_19_18:44:54.png' alt=''><xmp>
+
+- 지시서를 읽어서 객체를 조립해서 생성해주는 스프링의 객체이름은 ApplicationContext 임
+- ApplicationContext 는 인터페이스명
+- 구현 클래스 이름은 ClassPathXmlApplicationContext
+
+================================================================================
+</xmp><img src='./pics/2020_01_19_18:46:43.png' alt=''><xmp>
+
+- ApplicationContext 종류가 다양함
+- 지시서 config.xml 을 넘길때, 위치에 따라 달라짐
+- 어플리케이션 루트로 부터 경로 지정: ClassPathXmlApplicationContext (config.xml 이 루트에 위치함, 거기서 config.xml 파일을 찾아라)
+- FileSystemXmlApplicationContext: config.xml 이 C드라이브 어디에 있음
+- XmlWebApplicationContext: config.xml 이 웹에 있음
+- AnnotationConfigApplicationContext: 파일로 사용하지 않고, 어노테이션 기반 스캔으로 사용
+
+================================================================================
+</xmp><img src='./pics/2020_01_19_18:53:48.png' alt=''><xmp>
+
+- 루트는 src/
+
+================================================================================
+</xmp><img src='./pics/2020_01_19_18:54:47.png' alt=''><xmp>
+
+ApplicationContext context=new ClassPathXmlApplicationContext("spring/di/setting.xml")
+
+================================================================================
+스프링 라이브러리를 가져오는 방법
+1. 스프링 라이브러리를 직접 다운로드
+2. 메이븐 프로젝트로 만들었으면, dependency 로 지정하면 알아서 가져옴
+
+================================================================================
+</xmp><img src='./pics/2020_01_19_18:57:14.png' alt=''><xmp>
+
+- 이클립스 프로젝트에서 메이븐 프로젝트로 바꾸기
+
+================================================================================
+</xmp><img src='./pics/2020_01_19_18:57:45.png' alt=''><xmp>
+
+================================================================================
+</xmp><img src='./pics/2020_01_19_18:59:50.png' alt=''><xmp>
+
+================================================================================
+</xmp><img src='./pics/2020_01_19_19:00:56.png' alt=''><xmp>
+
+- IoC 컨테이너에 조립된 객체들이 담겨있다
+- 이름 (id) 로 꺼내쓴다
+
+================================================================================
+</xmp><img src='./pics/2020_01_19_19:02:10.png' alt=''><xmp>
+
+================================================================================
+</xmp><img src='./pics/2020_01_19_19:03:04.png' alt=''><xmp>
+
+================================================================================
+</xmp><img src='./pics/2020_01_19_19:09:12.png' alt=''><xmp>
+
+================================================================================
+</xmp><img src='./pics/2020_01_19_19:09:29.png' alt=''><xmp>
+</xmp><img src='./pics/2020_01_19_19:09:56.png' alt=''><xmp>
+
+- Grid 에서 Inline
+
+================================================================================
+</xmp><img src='./pics/2020_01_19_19:10:10.png' alt=''><xmp>
+
+- 소스코드에는 변화가없음
+
+</xmp>
+   </BODY>
+</HTML>
