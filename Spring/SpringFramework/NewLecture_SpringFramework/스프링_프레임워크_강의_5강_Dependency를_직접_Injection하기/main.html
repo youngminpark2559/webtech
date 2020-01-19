@@ -1,0 +1,195 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+   "http://www.w3.org/TR/html4/strict.dtd">
+<HTML>
+   <HEAD>
+      <TITLE>My first HTML document</TITLE>
+      <style rel="stylesheet" type="text/css">
+body {
+ font-size: 20px;
+ 
+ margin-top: 50px;
+    margin-bottom: 50px;
+    margin-right: 80px;
+    margin-left: 100px;
+    
+    padding-top: 50px;
+    padding-bottom: 50px;
+    padding-right: 80px;
+    padding-left: 80px;
+    
+    line-height:35px;
+}
+/* img {
+ width:900px;
+} */
+</style>
+      <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    "HTML-CSS" : {
+        availableFonts : ["STIX"],
+        preferredFont : "STIX",
+        webFont : "STIX-Web",
+        imageFont : null
+    }
+});
+</script>
+     <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js" type="text/javascript">    
+    MathJax.Hub.Config({
+        HTML: ["input/TeX","output/HTML-CSS"],
+        TeX: { extensions: ["AMSmath.js","AMSsymbols.js"], 
+               equationNumbers: { autoNumber: "AMS" } },
+        extensions: ["tex2jax.js"],
+        jax: ["input/TeX","output/HTML-CSS"],
+        tex2jax: { inlineMath: [ ['$$$','$$$'] ],
+                   displayMath: [ ['$$$$','$$$$'] ],
+                   processEscapes: true },
+        "HTML-CSS": { availableFonts: ["TeX"],
+                      linebreaks: { automatic: true } }
+    });
+</script>
+   </HEAD>
+   <BODY>
+<xmp>
+This is personal study note
+Copyright and original reference are from:
+www.youtube.com/watch?v=gtqctgfywn4
+스프링 프레임워크 강의 5강 - Dependency를 직접 Injection하기
+
+================================================================================
+</xmp><img src='./pics/2020_01_19_15:57:58.png' alt=''><xmp>
+
+- 자바 프로젝트를 생성
+
+================================================================================
+</xmp><img src='./pics/2020_01_19_16:00:22.png' alt=''><xmp>
+
+- 자바 프로젝트의 이름은 spring 이라고 작성
+
+================================================================================
+</xmp><img src='./pics/2020_01_19_16:01:10.png' alt=''><xmp>
+
+</xmp><img src='./pics/2020_01_19_16:02:00.png' alt=''><xmp>
+
+- src 위에서 Program 이라는 이름의 클래스를 추가한다 (동시에 spring.di 이름의 패키지를 추가함)
+- 메인함수를 자동 작성에 체크
+
+================================================================================
+</xmp><img src='./pics/2020_01_19_16:03:02.png' alt=''><xmp>
+
+- 작성된 Program 클래스
+- 2가지 클래스가 더 추가되어야함
+- 1. 데이터를 가지고 있는 엔티티로서의 클래스
+- 2. 그 엔티티를 활용해서 출력을 담당하는 클래스
+
+================================================================================
+</xmp><img src='./pics/2020_01_19_16:04:37.png' alt=''><xmp>
+
+- Exam 은 인터페이스
+- NewlecExam 은 Exam 인터페이스에 대한 구현 객체가 될 예정
+
+================================================================================
+</xmp><img src='./pics/2020_01_19_16:05:33.png' alt=''><xmp>
+
+</xmp><img src='./pics/2020_01_19_16:06:02.png' alt=''><xmp>
+
+- 인터페이스 생성
+- 패키지명은 spring.di.entity 로 함
+
+================================================================================
+</xmp><img src='./pics/2020_01_19_16:12:05.png' alt=''><xmp>
+
+- 객체가 가지고 있는 토탈을 반환하는 능력
+- 객체가 가지고 있는 평균을 반환하는 능력
+
+================================================================================
+</xmp><img src='./pics/2020_01_19_16:07:36.png' alt=''><xmp>
+</xmp><img src='./pics/2020_01_19_16:08:25.png' alt=''><xmp>
+</xmp><img src='./pics/2020_01_19_16:08:49.png' alt=''><xmp>
+
+- Exam 인터페이스를 구현하는 NewlecExam 클래스를 만듦
+
+================================================================================
+</xmp><img src='./pics/2020_01_19_16:12:47.png' alt=''><xmp>
+
+- NewlecExam 클래스를 업데이트함
+- NewlecExam 클래스는 데이터를 가지고 있는 클래스임
+- private 필드를 만듦
+
+================================================================================
+</xmp><img src='./pics/2020_01_19_16:39:41.png' alt=''><xmp>
+
+- 또하나의 클래스를 만듦 (보여주는 클래스)
+- ExamConsole 은 인터페이스
+- InlineExamConsole 은 구현클래스1
+- GridExamConsole 은 구현클래스2
+
+================================================================================
+</xmp><img src='./pics/2020_01_19_16:41:02.png' alt=''><xmp>
+</xmp><img src='./pics/2020_01_19_16:42:11.png' alt=''><xmp>
+</xmp><img src='./pics/2020_01_19_16:50:04.png' alt=''><xmp>
+
+- ExamConsole 인터페이스를 만듦
+- 패키지는 spring.di.ui
+
+================================================================================
+</xmp><img src='./pics/2020_01_19_16:50:39.png' alt=''><xmp>
+</xmp><img src='./pics/2020_01_19_16:51:02.png' alt=''><xmp>
+
+- InlineExamConsole 클래스 생성
+
+================================================================================
+</xmp><img src='./pics/2020_01_19_16:52:53.png' alt=''><xmp>
+</xmp><img src='./pics/2020_01_19_16:52:20.png' alt=''><xmp>
+</xmp><img src='./pics/2020_01_19_16:53:34.png' alt=''><xmp>
+</xmp><img src='./pics/2020_01_19_16:54:23.png' alt=''><xmp>
+
+- InlineExamConsole 클래스 작성
+- 필드 작성
+- 필드를 사용하는 생성자 (overload 생성자) 작성
+
+================================================================================
+</xmp><img src='./pics/2020_01_19_16:55:05.png' alt=''><xmp>
+
+- 실행
+
+================================================================================
+</xmp><img src='./pics/2020_01_19_16:55:43.png' alt=''><xmp>
+</xmp><img src='./pics/2020_01_19_17:06:46.png' alt=''><xmp>
+
+- GridExamConsole 클래스를 작성
+
+================================================================================
+</xmp><img src='./pics/2020_01_19_17:07:55.png' alt=''><xmp>
+
+- GridExamConsole 클래스 내용 업데이트
+
+================================================================================
+</xmp><img src='./pics/2020_01_19_17:09:03.png' alt=''><xmp>
+
+- 실행
+
+================================================================================
+</xmp><img src='./pics/2020_01_19_17:09:43.png' alt=''><xmp>
+
+- InlineExamConsole 클래스 부품 (출력 기능 부품) 과 exam 객체 (데이터 저장 기능 부품) 이 같이 조립됨
+- 조립된 객체가 console 에 의해 표시됨
+- DI 임
+- console 은 조립된 부품에 의존한다
+
+================================================================================
+</xmp><img src='./pics/2020_01_19_17:12:36.png' alt=''><xmp>
+
+- 부품을 교체함 (출력 기능 부품을 Inline 에서 Grid 로)
+- 부품의 교체를 사람이 직접 해주는 예시임
+
+================================================================================
+</xmp><img src='./pics/2020_01_19_17:13:41.png' alt=''><xmp>
+
+- [] 처럼 부품 조립 코드를 작성하지 않을 것임
+- 설정을 외부로 뺀다
+- 부품 조립을 스프링 프레임워크가 할 것이고, 조립된 객체는 여기로 주입될 것임
+- 사람이 소스코드를 변경 시킬 필요 없다
+
+</xmp>
+   </BODY>
+</HTML>
