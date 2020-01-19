@@ -1,0 +1,117 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+   "http://www.w3.org/TR/html4/strict.dtd">
+<HTML>
+   <HEAD>
+      <TITLE>My first HTML document</TITLE>
+      <style rel="stylesheet" type="text/css">
+body {
+ font-size: 20px;
+ 
+ margin-top: 50px;
+    margin-bottom: 50px;
+    margin-right: 80px;
+    margin-left: 100px;
+    
+    padding-top: 50px;
+    padding-bottom: 50px;
+    padding-right: 80px;
+    padding-left: 80px;
+    
+    line-height:35px;
+}
+/* img {
+ width:900px;
+} */
+</style>
+      <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    "HTML-CSS" : {
+        availableFonts : ["STIX"],
+        preferredFont : "STIX",
+        webFont : "STIX-Web",
+        imageFont : null
+    }
+});
+</script>
+     <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js" type="text/javascript">    
+    MathJax.Hub.Config({
+        HTML: ["input/TeX","output/HTML-CSS"],
+        TeX: { extensions: ["AMSmath.js","AMSsymbols.js"], 
+               equationNumbers: { autoNumber: "AMS" } },
+        extensions: ["tex2jax.js"],
+        jax: ["input/TeX","output/HTML-CSS"],
+        tex2jax: { inlineMath: [ ['$$$','$$$'] ],
+                   displayMath: [ ['$$$$','$$$$'] ],
+                   processEscapes: true },
+        "HTML-CSS": { availableFonts: ["TeX"],
+                      linebreaks: { automatic: true } }
+    });
+</script>
+   </HEAD>
+   <BODY>
+<xmp>
+This is personal study note
+Copyright and original reference are from:
+www.youtube.com/watch?v=bYu9MNLBvX0
+스프링 프레임워크 강의 7강 - 스프링 DI 지시서 작성하기(Spring Bean Configuration)
+스프링_프레임워크_강의_7강_스프링_DI_지시서_작성하기_Spring_Bean_Configuration
+
+================================================================================
+</xmp><img src='./pics/2020_01_19_18:04:02.png' alt=''><xmp>
+
+- NewlecExam 객체, ExamConsole 객체
+- 두 객체가 결합되어 사용된다
+- ExamConsole 이 NewlecExam 을 사용함
+
+================================================================================
+</xmp><img src='./pics/2020_01_19_18:07:45.png' alt=''><xmp>
+
+- 스프링은 bean 이라고 하는 태그를 이용해서 생성할 객체를 지시해달라고 말함
+
+================================================================================
+</xmp><img src='./pics/2020_01_19_18:09:24.png' alt=''><xmp>
+</xmp><img src='./pics/2020_01_19_18:09:47.png' alt=''><xmp>
+
+- 어떠한 클래스를 객체화할것인지,
+- 그 클래스를 class 에 작성
+- 그 객체를 어떤 이름 (변수명) 으로 쓸 건지, id 에 작성
+
+================================================================================
+</xmp><img src='./pics/2020_01_19_18:11:13.png' alt=''><xmp>
+
+- 이름이 같은 클래스가 있을 수 있으니까
+- 패키지명도 같이 써줘야함
+- exam 이라는 이름으로 코드에서 꺼내 쓸 수 있음
+
+================================================================================
+</xmp><img src='./pics/2020_01_19_18:15:56.png' alt=''><xmp>
+
+- GridExamConsole 을 적용
+
+================================================================================
+</xmp><img src='./pics/2020_01_19_18:19:33.png' alt=''><xmp>
+
+- 조립을 지시함
+- setExam: exam 속성에 set
+
+================================================================================
+</xmp><img src='./pics/2020_01_19_18:20:34.png' alt=''><xmp>
+
+- setExam 함수명, property 명으로 setter 를 쓰는 것임
+- 원래는 setExam 이라는 setter 를 쓰는건데
+- property 명으로 대신해서,
+- set 을 생략함
+- 대문자를 소문자로 바꾼다
+- 하지만 exam 은 setExam 을 호출하기위한 함수명이다
+
+</xmp><img src='./pics/2020_01_19_18:22:00.png' alt=''><xmp>
+
+================================================================================
+</xmp><img src='./pics/2020_01_19_18:23:02.png' alt=''><xmp>
+
+================================================================================
+</xmp><img src='./pics/2020_01_19_18:23:52.png' alt=''><xmp>
+
+</xmp>
+   </BODY>
+</HTML>
