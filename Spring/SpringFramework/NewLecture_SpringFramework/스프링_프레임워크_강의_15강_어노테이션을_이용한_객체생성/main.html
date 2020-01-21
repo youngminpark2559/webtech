@@ -1,0 +1,100 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+   "http://www.w3.org/TR/html4/strict.dtd">
+<HTML>
+   <HEAD>
+      <TITLE>My first HTML document</TITLE>
+      <style rel="stylesheet" type="text/css">
+body {
+ font-size: 20px;
+ 
+ margin-top: 50px;
+    margin-bottom: 50px;
+    margin-right: 80px;
+    margin-left: 100px;
+    
+    padding-top: 50px;
+    padding-bottom: 50px;
+    padding-right: 80px;
+    padding-left: 80px;
+    
+    line-height:35px;
+}
+/* img {
+ width:900px;
+} */
+</style>
+      <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    "HTML-CSS" : {
+        availableFonts : ["STIX"],
+        preferredFont : "STIX",
+        webFont : "STIX-Web",
+        imageFont : null
+    }
+});
+</script>
+     <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js" type="text/javascript">    
+    MathJax.Hub.Config({
+        HTML: ["input/TeX","output/HTML-CSS"],
+        TeX: { extensions: ["AMSmath.js","AMSsymbols.js"], 
+               equationNumbers: { autoNumber: "AMS" } },
+        extensions: ["tex2jax.js"],
+        jax: ["input/TeX","output/HTML-CSS"],
+        tex2jax: { inlineMath: [ ['$$$','$$$'] ],
+                   displayMath: [ ['$$$$','$$$$'] ],
+                   processEscapes: true },
+        "HTML-CSS": { availableFonts: ["TeX"],
+                      linebreaks: { automatic: true } }
+    });
+</script>
+   </HEAD>
+   <BODY>
+<xmp>
+This is personal study note
+Copyright and original reference are from:
+www.youtube.com/watch?v=MlTk1AFMIzU
+스프링 프레임워크 강의 14강 - @Autowired의 위치와 required 옵션
+스프링_프레임워크_강의_14강_@Autowired의_위치와_required_옵션
+
+================================================================================
+/mnt/external_disk/Capture_temp/2020_01_21_22:01:53.png
+
+- 객체 생성을 어노테이션으로 해보자
+- 그리고 xml 에서 위 문장을 지우자
+
+================================================================================
+/mnt/external_disk/Capture_temp/2020_01_21_22:03:41.png
+
+- 클래스 위에 @Component
+- 클래스가 스프링에 의해서 객체가 됨
+- 그런데 @Component 가 스프링에서 읽혀야함
+
+================================================================================
+/mnt/external_disk/Capture_temp/2020_01_21_22:05:04.png
+
+- 스프링은 spring.di.ui 패키지를 뒤져야함
+- 거기에 있는 클래스 뒤져서, component-scan 해야함
+- 그 녀석을 객체화 해야함
+
+================================================================================
+위에 설정 있으면 밑에 설정은 없어도됨
+/mnt/external_disk/Capture_temp/2020_01_21_22:06:58.png
+
+================================================================================
+/mnt/external_disk/Capture_temp/2020_01_21_22:08:16.png
+
+/mnt/external_disk/Capture_temp/2020_01_21_22:08:37.png
+
+================================================================================
+/mnt/external_disk/Capture_temp/2020_01_21_22:09:41.png
+
+- xml 에서 id 처럼 이름 명명 가능
+
+================================================================================
+/mnt/external_disk/Capture_temp/2020_01_21_22:13:10.png
+
+- 검색 시 다른 패키지 추가
+
+</xmp>
+   </BODY>
+</HTML>
