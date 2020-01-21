@@ -1,0 +1,97 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+   "http://www.w3.org/TR/html4/strict.dtd">
+<HTML>
+   <HEAD>
+      <TITLE>My first HTML document</TITLE>
+      <style rel="stylesheet" type="text/css">
+body {
+ font-size: 20px;
+ 
+ margin-top: 50px;
+    margin-bottom: 50px;
+    margin-right: 80px;
+    margin-left: 100px;
+    
+    padding-top: 50px;
+    padding-bottom: 50px;
+    padding-right: 80px;
+    padding-left: 80px;
+    
+    line-height:35px;
+}
+/* img {
+ width:900px;
+} */
+</style>
+      <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    "HTML-CSS" : {
+        availableFonts : ["STIX"],
+        preferredFont : "STIX",
+        webFont : "STIX-Web",
+        imageFont : null
+    }
+});
+</script>
+     <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js" type="text/javascript">    
+    MathJax.Hub.Config({
+        HTML: ["input/TeX","output/HTML-CSS"],
+        TeX: { extensions: ["AMSmath.js","AMSsymbols.js"], 
+               equationNumbers: { autoNumber: "AMS" } },
+        extensions: ["tex2jax.js"],
+        jax: ["input/TeX","output/HTML-CSS"],
+        tex2jax: { inlineMath: [ ['$$$','$$$'] ],
+                   displayMath: [ ['$$$$','$$$$'] ],
+                   processEscapes: true },
+        "HTML-CSS": { availableFonts: ["TeX"],
+                      linebreaks: { automatic: true } }
+    });
+</script>
+   </HEAD>
+   <BODY>
+<xmp>
+This is personal study note
+Copyright and original reference are from:
+www.youtube.com/watch?v=MlTk1AFMIzU
+스프링 프레임워크 강의 14강 - @Autowired의 위치와 required 옵션
+스프링_프레임워크_강의_14강_@Autowired의_위치와_required_옵션
+
+================================================================================
+@Autowired 는 3군데에 들어갈 수 있음
+@Required 옵션 
+
+================================================================================
+</xmp><img src='./pics/2020_01_21_21:42:51.png' alt=''><xmp>
+
+- setter 위에 @Autowired
+
+================================================================================
+</xmp><img src='./pics/2020_01_21_21:43:20.png' alt=''><xmp>
+
+- 필드 위에 @Autowired
+- 기본생성자에서 @Autowired 와 같음
+
+================================================================================
+</xmp><img src='./pics/2020_01_21_21:43:48.png' alt=''><xmp>
+
+- 오버로드 생성자위에 @Autowired
+
+================================================================================
+</xmp><img src='./pics/2020_01_21_21:45:34.png' alt=''><xmp>
+
+- Autowired 콜 될때, 기본생성자 실행됨
+
+================================================================================
+</xmp><img src='./pics/2020_01_21_21:46:15.png' alt=''><xmp>
+
+</xmp><img src='./pics/2020_01_21_21:46:29.png' alt=''><xmp>
+
+================================================================================
+</xmp><img src='./pics/2020_01_21_21:47:45.png' alt=''><xmp>
+
+- 오버로드 생성자는 파라미터 여러개 될 수 있어서
+- 각각 Qualifier 지정
+
+</xmp>
+   </BODY>
+</HTML>
