@@ -1,0 +1,145 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+   "http://www.w3.org/TR/html4/strict.dtd">
+<HTML>
+   <HEAD>
+      <TITLE>My first HTML document</TITLE>
+      <style rel="stylesheet" type="text/css">
+body {
+ font-size: 20px;
+ 
+ margin-top: 50px;
+    margin-bottom: 50px;
+    margin-right: 80px;
+    margin-left: 100px;
+    
+    padding-top: 50px;
+    padding-bottom: 50px;
+    padding-right: 80px;
+    padding-left: 80px;
+    
+    line-height:35px;
+}
+/* img {
+ width:900px;
+} */
+</style>
+      <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    "HTML-CSS" : {
+        availableFonts : ["STIX"],
+        preferredFont : "STIX",
+        webFont : "STIX-Web",
+        imageFont : null
+    }
+});
+</script>
+     <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js" type="text/javascript">    
+    MathJax.Hub.Config({
+        HTML: ["input/TeX","output/HTML-CSS"],
+        TeX: { extensions: ["AMSmath.js","AMSsymbols.js"], 
+               equationNumbers: { autoNumber: "AMS" } },
+        extensions: ["tex2jax.js"],
+        jax: ["input/TeX","output/HTML-CSS"],
+        tex2jax: { inlineMath: [ ['$$$','$$$'] ],
+                   displayMath: [ ['$$$$','$$$$'] ],
+                   processEscapes: true },
+        "HTML-CSS": { availableFonts: ["TeX"],
+                      linebreaks: { automatic: true } }
+    });
+</script>
+   </HEAD>
+   <BODY>
+<xmp>
+This is personal study note
+Copyright and original reference are from:
+www.youtube.com/watch?v=0ktRT5Fatnw
+스프링 프레임워크 강의 16강 - 특화된 @Component 어노테이션 (@Controller/@Service/@Repository)
+스프링_프레임워크_강의_16강_특화된_@Component_어노테이션_@Controller_@Service_@Repository
+
+================================================================================
+- 지난 시간에 @Component 사용해서 객체를 생성하는 설정을 했음
+
+================================================================================
+</xmp><img src='./pics/2020_01_21_17:44:06.png' alt=''><xmp>
+
+- @Component 를 사용하여 NewlecExam 객체를 생성함
+- 어노테이션을 사용해서 객체를 생성할 때는, 값을 어떻게 초기화 할 것인가?
+- @Value 를 사용함
+
+================================================================================
+</xmp><img src='./pics/2020_01_21_17:45:45.png' alt=''><xmp>
+
+================================================================================
+</xmp><img src='./pics/2020_01_21_17:46:17.png' alt=''><xmp>
+
+- NewlecExam 은 기본값이 없는 상태임
+- 기본값이 없는 상태에서 IoC 컨테이너에 담김
+
+================================================================================
+</xmp><img src='./pics/2020_01_21_17:47:14.png' alt=''><xmp>
+
+- 기본값이 없어서 0 출력
+
+================================================================================
+</xmp><img src='./pics/2020_01_21_17:47:40.png' alt=''><xmp>
+
+- kor 기본값 20 설정
+
+================================================================================
+</xmp><img src='./pics/2020_01_21_17:48:26.png' alt=''><xmp>
+
+================================================================================
+</xmp><img src='./pics/2020_01_21_17:49:05.png' alt=''><xmp>
+
+- NewlecExam 클래스는 @Component 로 객체화하는 것이 의미상으로는 맞지 않다
+- @Component 를 클래스에 붙이면 객체화 할 수 있음
+
+- MVC 방식으로 웹어플리케이션을 만들때, MVC 를 구성하는 자바코드를 컴포넌트라고 함
+- 그래서 Component 라는 용어보다, 의미론적으로 상세한 표현을 위해, @Controller, @Service, @Repository 를 사용함
+
+================================================================================
+</xmp><img src='./pics/2020_01_21_17:53:24.png' alt=''><xmp>
+
+</xmp><img src='./pics/2020_01_21_17:53:49.png' alt=''><xmp>
+
+- 다 실행 된다
+- 이름이 좀더 의미론적으로 특화된 차이만 있음
+
+================================================================================
+</xmp><img src='./pics/2020_01_21_18:00:38.png' alt=''><xmp>
+
+================================================================================
+</xmp><img src='./pics/2020_01_21_18:04:49.png' alt=''><xmp>
+
+- Controller (C):
+  - 사용자의 입출력을 담당
+  - 요청에 맞게 데이터 서비스를 위임함
+
+- Service 역할
+  - 사용자의 요구사항에 맞는 서비스를 제공함
+  - Controller 로 부터 데이터 서비스를 위임받음
+  - 업무단위, 트랜잭션 단위 로서 서비스를 담당함
+  - 서비스는 Repository (DAO: Data Access Object) 로 부터 데이터를 제공받음
+
+- Repository 역할
+
+================================================================================
+- C, Service, Repository 에 @Component 를 붙일 수 있음
+
+- 의미론적으로 다음이 추천됨
+  - C: @Controller
+  - Service: @Service
+  - Repository: @Repository
+
+================================================================================
+</xmp><img src='./pics/2020_01_21_18:11:22.png' alt=''><xmp>
+
+- NewlecExam 클래스는 Entity 에 해당됨
+- Entity 와 Model 클래스는 일반적으로 @Component 붙이지 않음
+
+- 직접만드는 클래스말고, 외부라이브러리 클래스도 있음
+- 여기에는 어노테이션 못 붙임
+
+</xmp>
+   </BODY>
+</HTML>
